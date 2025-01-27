@@ -1,6 +1,11 @@
 import { AdvertClass } from '../../models'
-import { UserSettingClass } from '../../utils'
 import router from '@ohos.router'
+import { TOKEN_KEY } from '../../constants'
+import { UserSettingClass } from '../../utils'
+
+// 这里练习从PersistentStorage中读取Token
+// 注意：PersistentStorage 只能在页面中使用
+PersistentStorage.persistProp(TOKEN_KEY,'')
 
 @Entry
 @Component
@@ -15,12 +20,24 @@ struct Start {
     // 实现广告倒计时
     this.timer = setInterval(()=>{
       if (this.adObj!.adTime === 0) {
-        router.replaceUrl({url:"pages/Index"})
+        // 判断是否有登录，没有跳转登录页面
+        this.toNext()
         clearInterval(this.timer)
         return
       }
       this.adObj!.adTime--
     },1000)
+  }
+
+  toNext(){
+    // 从PersistentStorage中读取token
+    const token = AppStorage.get<string>(TOKEN_KEY)
+
+    if (token === '') {
+      router.replaceUrl({url:'pages/Login/Login'})
+    }else {
+      router.replaceUrl({url:'pages/Index'})
+    }
   }
 
   build() {
@@ -36,7 +53,7 @@ struct Start {
         .textAlign(TextAlign.Center)
         .onClick(()=>{
           clearInterval(this.timer)
-          router.replaceUrl({url:'pages/Index'})
+          this.toNext()
         })
     }
     .height('100%')

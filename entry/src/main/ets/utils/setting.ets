@@ -1,5 +1,5 @@
 import preferences from "@ohos.data.preferences"
-import { USER_SETTING, USER_SETTING_AD } from "../constants"
+import { TOKEN_KEY, USER_SETTING, USER_SETTING_AD } from "../constants"
 import { AdvertClass } from "../models"
 
 /**
@@ -12,8 +12,9 @@ const defaultAd:AdvertClass = {
 }
 
 /**
- * 广告首选项
+ * 首选项
  * 功能1：实现广告数据的存储
+ * 功能2：实现用户信息的存储: 令牌 token
  */
 export class UserSettingClass {
   context:Context
@@ -52,6 +53,26 @@ export class UserSettingClass {
     await store.put(USER_SETTING_AD,JSON.stringify(ad))
     // 持久化广告数据
     await store.flush()
+  }
+
+  /**
+   * 存储用户信息
+   * @param token 用户令牌token
+   */
+  async setUserToken(token:string){
+    const store = await this.getStore()
+    // 写入广告数据
+    await store.put(TOKEN_KEY,JSON.stringify(token))
+    // 持久化广告数据
+    await store.flush()
+  }
+
+  /**
+   * 获取用户信息
+   */
+  async getUserToken(){
+    const store = await this.getStore()
+    return await store.get(TOKEN_KEY,'') as string
   }
 
 }

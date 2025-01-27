@@ -41,13 +41,21 @@ export default class EntryAbility extends UIAbility {
     if (result.showAd){
       windowStage.loadContent("pages/Start/Start")
     }else {
-      windowStage.loadContent('pages/Index', (err) => {
-        if (err.code) {
-          hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
-          return;
-        }
-        hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
-      });
+      // 获取用户令牌
+      const token = await userSetting.getUserToken()
+      if (token === ''){
+        // 用户未登录
+        windowStage.loadContent("pages/Login/Login")
+      }else {
+        // 用户已登录
+        windowStage.loadContent('pages/Index', (err) => {
+          if (err.code) {
+            hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
+            return;
+          }
+          hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
+        });
+      }
     }
   }
 
