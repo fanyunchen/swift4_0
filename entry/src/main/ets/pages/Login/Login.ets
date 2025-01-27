@@ -1,7 +1,10 @@
+import { LoginFormModel } from '../../models';
+
 @Entry
 @Component
 struct Login {
   @State showLoading: boolean = false;
+  @State accountForm:LoginFormModel = new LoginFormModel({account:'',password:''})
 
   build() {
     Column() {
@@ -31,10 +34,16 @@ struct Login {
 
       TextInput({ placeholder: '请输入账号' })
         .inputStyles()
+        .onChange((value)=>{
+          this.accountForm.account = value
+        })
 
       TextInput({ placeholder: '请输入密码' })
         .inputStyles()
         .type(InputType.Password)
+        .onChange((value)=>{
+          this.accountForm.password = value
+        })
 
       Button() {
         Row() {
@@ -51,6 +60,7 @@ struct Login {
       }
       .width("100%")
       .height(45)
+      .enabled(this.accountForm.account!=='' && this.accountForm.password !== '')
       .margin({ top: 50 })
       .backgroundColor($r('app.color.primary'))
       .onClick(()=>{
