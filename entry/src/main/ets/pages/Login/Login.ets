@@ -1,4 +1,5 @@
 import { LoginFormModel } from '../../models';
+import { http } from '@kit.NetworkKit';
 
 @Entry
 @Component
@@ -63,8 +64,30 @@ struct Login {
       .enabled(this.accountForm.account!=='' && this.accountForm.password !== '')
       .margin({ top: 50 })
       .backgroundColor($r('app.color.primary'))
-      .onClick(()=>{
+      .onClick(async ()=>{
         this.showLoading = true
+        // 调用服务端的后台接口完成用户身份的验证
+        const loginUrl = "http://122.51.240.24:31007/driver/login/account"
+        // 1.创建请求对象，注意：每次请求都需要创建一个新的，不能重复使用
+        const httpRequest = http.createHttp()
+        // 2.设置请求头
+        const config:http.HttpRequestOptions = {
+          method:http.RequestMethod.POST,
+          header:{
+            "Content-Type":"application/json",  // 请求数据类型
+            "Authorization":''  // 令牌
+          },
+          extraData:this.accountForm
+        }
+        // 3.发送请求
+        const res = await httpRequest.request(loginUrl,config)
+        // 4.解析请求结果
+        AlertDialog.show({message:JSON.stringify(res,null,2)})
+
+        // 5.关闭请求对象
+        httpRequest.destroy()
+
+        this.showLoading = false
       })
     }
     .height('100%')
