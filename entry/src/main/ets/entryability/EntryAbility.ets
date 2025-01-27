@@ -1,6 +1,8 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { AdvertClass } from '../models';
+import { UserSettingClass } from '../utils';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -12,17 +14,41 @@ export default class EntryAbility extends UIAbility {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onDestroy');
   }
 
-  onWindowStageCreate(windowStage: window.WindowStage): void {
+  async onWindowStageCreate(windowStage: window.WindowStage): Promise<void> {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
-    windowStage.loadContent('pages/Index', (err) => {
-      if (err.code) {
-        hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
-        return;
-      }
-      hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
-    });
+    // 判断是否加载广告
+    // // 1.从后台服务中获取广告数据
+    // const result = await new Promise<AdvertClass>((resolve,reject)=>{
+    //   setTimeout(()=>{
+    //     resolve({
+    //       showAd:true,
+    //       adTime:10,
+    //       adImg:$r('app.media.start')
+    //     } as AdvertClass)
+    //   },500)
+    // })
+    //
+    // // 2.存储首选项
+    // const userSetting = new UserSettingClass(this.context)
+    // userSetting.setUserAd(result)
+
+    const userSetting = new UserSettingClass(this.context)
+    const result = await userSetting.getUserAd()
+
+    // 3.判断是否需要展示广告
+    if (result.showAd){
+      windowStage.loadContent("pages/Start/Start")
+    }else {
+      windowStage.loadContent('pages/Index', (err) => {
+        if (err.code) {
+          hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
+          return;
+        }
+        hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
+      });
+    }
   }
 
   onWindowStageDestroy(): void {

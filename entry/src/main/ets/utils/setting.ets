@@ -13,21 +13,27 @@ const defaultAd:AdvertClass = {
 
 /**
  * 广告首选项
+ * 功能1：实现广告数据的存储
  */
 export class UserSettingClass {
-  // 功能1：实现广告数据的存储
   context:Context
 
   constructor(context:Context) {
     this.context = context
   }
 
-  // 1.获取首选项对象
+  /**
+   * 获取首选项对象
+   * @returns  Promise<preferences.Preferences>
+   */
   getStore(){
     return preferences.getPreferences(this.context,USER_SETTING)
   }
 
-  // 2.读取广告首选项
+  /**
+   * 读取广告首选项
+   * @returns Promise<AdvertClass>
+   */
   async getUserAd(){
     const store = await this.getStore()
     // 获取广告数据的字符串形式
@@ -36,7 +42,10 @@ export class UserSettingClass {
     return JSON.parse(result) as AdvertClass
   }
 
-  // 3.存储广告首选项
+  /**
+   * 存储广告首选项
+   * @param ad  广告数据
+   */
   async setUserAd(ad:AdvertClass){
     const store = await this.getStore()
     // 写入广告数据
