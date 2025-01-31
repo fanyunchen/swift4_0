@@ -1,15 +1,24 @@
 import { HMCard, HMCardItem } from "../../../components"
 import promptAction from "@ohos.promptAction"
-import { getUserInfo } from "../../../api"
-import { UserInfo, UserInfoModel } from "../../../models"
+import { getUserInfo, getUserTaskInfo } from "../../../api"
+import { UserInfo, UserInfoModel, UserTaskInfo, UserTaskInfoModel, UserTaskInfoParamsModel } from "../../../models"
 
 @Preview
 @Component
 export struct My {
+  // 本月任务接口请求的查询参数
+  queryTaskParams: UserTaskInfoParamsModel = new UserTaskInfoParamsModel({
+    year: new Date().getFullYear().toString(),
+    month: (new Date().getMonth() + 1).toString()
+  })
+  // 接收查询的司机信息
   @State userInfo: UserInfoModel = new UserInfoModel({} as UserInfo)
+  // 接收查询的本月任务数据
+  @State UserTaskInfo: UserTaskInfoModel = new UserTaskInfoModel({} as UserTaskInfo)
 
   aboutToAppear(): void {
     this.getUserInfo()
+    this.getUserTaskInfo()
   }
 
   // 获取用户数据
@@ -22,6 +31,19 @@ export struct My {
       console.log('hmlog-->', "UserInfo" + JSON.stringify(this.userInfo))
     } catch (err) {
       console.error('hmlog-->', "getUserInfo Failed.Err:" + JSON.stringify(err))
+    }
+  }
+
+  // 获取本月任务数据
+  async getUserTaskInfo() {
+    try {
+      const res = await getUserTaskInfo(this.queryTaskParams)
+      if (res !== '' && res !== null) {
+        this.UserTaskInfo = res
+        console.log('hmlog-->', 'UserTaskInfo:' + JSON.stringify(this.UserTaskInfo))
+      }
+    } catch (err) {
+      console.error('hmlog-->', "getUserTaskInfo Failed.Err:" + JSON.stringify(err))
     }
   }
 
@@ -69,7 +91,7 @@ export struct My {
           .lineHeight(20)
         Row() {
           Column({ space: 17 }) {
-            Text('1000')
+            Text(this.UserTaskInfo.taskAmounts?.toString() || '0')
               .fontSize(18)
               .fontColor($r('app.color.text_primary'))
               .lineHeight(25)
@@ -80,7 +102,7 @@ export struct My {
           }
 
           Column({ space: 17 }) {
-            Text('1000')
+            Text(this.UserTaskInfo.taskAmounts?.toString() || '0')
               .fontSize(18)
               .fontColor($r('app.color.text_primary'))
               .lineHeight(25)
@@ -91,7 +113,7 @@ export struct My {
           }
 
           Column({ space: 17 }) {
-            Text('1000')
+            Text(this.UserTaskInfo.transportMileage?.toString() || '0')
               .fontSize(18)
               .fontColor($r('app.color.text_primary'))
               .lineHeight(25)
