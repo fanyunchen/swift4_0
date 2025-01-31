@@ -51,26 +51,31 @@ export async function requestTHttp<T>(
     // 4.解析结果
     if (res.responseCode === 401) {
       promptAction.showToast({message:'未授权或token失效'})
+      console.log('hmlog-->','未授权或token失效')
       AppStorage.set(TOKEN_KEY,'')  // 清空本地缓存中的token
       new UserSettingClass(getContext()).setUserToken('') // 清空首选项中token
       return ''
     }else if(res.responseCode === 404){
       // 地址错误或找不到资源地址
       promptAction.showToast({message:'请求地址错误'})
+      console.log('hmlog-->','请求地址错误')
       return ''
     }else {
       // 请求成功
       const result = JSON.parse(res.result.toString()) as ResponseData<T>
       if (result.code === 200) {
         // 执行成功
+        console.log('hmlog-->',"result.data:" + result.data)
         return result.data
       }else {
         promptAction.showToast({message:result.msg})
+        console.log('hmlog-->','result.msg:' + result.msg)
         return ''
       }
     }
   } catch (err) {
     promptAction.showToast({message:JSON.stringify(err)})
+    console.error('hmlog-->',"requestTHttp Failed.Err:" + JSON.stringify(err))
     return ''
   } finally {
     // 关闭请求
@@ -79,16 +84,16 @@ export async function requestTHttp<T>(
 }
 
 export class Request {
-  static async get<T>(url:string,data?:object){
-    return await requestTHttp<T>(url,http.RequestMethod.GET,data)
+  static get<T>(url:string,data?:object): Promise<"" | T | null>{
+    return requestTHttp<T>(url,http.RequestMethod.GET,data)
   }
-  static async post<T>(url:string,data?:object){
-    return await requestTHttp<T>(url,http.RequestMethod.POST,data)
+  static post<T>(url:string,data?:object): Promise<"" | T | null>{
+    return  requestTHttp<T>(url,http.RequestMethod.POST,data)
   }
-  static async delete<T>(url:string,data?:object){
-    return await requestTHttp<T>(url,http.RequestMethod.DELETE,data)
+  static delete<T>(url:string,data?:object): Promise<"" | T | null>{
+    return requestTHttp<T>(url,http.RequestMethod.DELETE,data)
   }
-  static async put<T>(url:string,data?:object){
-    return  await requestTHttp<T>(url,http.RequestMethod.PUT,data)
+  static  put<T>(url:string,data?:object): Promise<"" | T | null>{
+    return requestTHttp<T>(url,http.RequestMethod.PUT,data)
   }
 }
