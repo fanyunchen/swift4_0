@@ -4,6 +4,7 @@ import { http } from "@kit.NetworkKit";
 import promptAction from "@ohos.promptAction";
 import { UserSettingClass } from ".";
 import { ResponseData } from "../models";
+import axios, { AxiosInstance, AxiosResponse } from "@ohos/axios";
 
 /**
  * 实现网络请求的方法
@@ -98,5 +99,74 @@ export class Request {
 
   static put<T>(url: string, data?: object): Promise<"" | T | null> {
     return requestTHttp<T>(url, http.RequestMethod.PUT, data)
+  }
+}
+
+// 第三方库Axios实现网络请求
+export class RequestAxios {
+  //私有属性
+  private instance: AxiosInstance
+
+  //私有：获取基础连接对象(isMT：是否是美团数据接口)
+  constructor() {
+    this.instance = axios.create({
+      baseURL: BASE_URL,
+      timeout: 3000  // 响应时间 单位毫秒
+    })
+  }
+
+  // get请求
+  async get(path: string, data?: object) {
+    let urlStr: string = ''
+    // 判断是否需要携带数据
+    if (data && Object.keys(data).length) {
+      // 需要携带数据
+      urlStr += "?" + Object.keys(data).map((key) => {
+        // 判断该属性是否有值
+        if (data[key]) {
+          // 有值
+          return `${key}=${data[key]}`
+        }
+        // 没值
+        return ''
+      }).join("&")
+    }
+    console.log('hmlog-->', 'Axios get urlStr:' + path + urlStr)
+    try {
+      const res: AxiosResponse = await this.instance.get(path + urlStr, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': AppStorage.get<string>(TOKEN_KEY) || ''
+        }
+      })
+      console.log('hmlog-->', "axios get res.data:" + JSON.stringify(res.data))
+      return res.data
+    } catch (err) {
+      console.error('hmlog-->', "axios get failed.Err:" + JSON.stringify(err))
+      return ''
+    }
+  }
+
+  // post请求
+  async post(path: string, data?: object) {
+    try {
+      const res: AxiosResponse = await this.instance.post(path, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': AppStorage.get<string>(TOKEN_KEY) || ''
+        }
+      })
+      console.log('hmlog-->', "axios post res.data:" + JSON.stringify(res.data))
+      if (res.data.code === 200) {
+        promptAction.showToast({ message: '登录成功' })
+        return res.data
+      } else {
+        promptAction.showToast({ message: res.data.msg })
+        return ''
+      }
+    } catch (err) {
+      console.error('hmlog-->', "axios post failed.Err:" + JSON.stringify(err))
+      return ''
+    }
   }
 }

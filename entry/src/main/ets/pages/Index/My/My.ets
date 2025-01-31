@@ -25,10 +25,13 @@ export struct My {
   async getUserInfo() {
     try {
       const res = await getUserInfo()
-      if (res !== '' && res !== null) {
-        this.userInfo = res
+      // if (res !== '' && res !== null) {
+      //   this.userInfo = res
+      // }
+      if (res !== '') {
+        this.userInfo = JSON.parse(JSON.stringify(res.data))
+        console.log('hmlog-->', "UserInfo" + JSON.stringify(this.userInfo))
       }
-      console.log('hmlog-->', "UserInfo" + JSON.stringify(this.userInfo))
     } catch (err) {
       console.error('hmlog-->', "getUserInfo Failed.Err:" + JSON.stringify(err))
     }
@@ -38,8 +41,12 @@ export struct My {
   async getUserTaskInfo() {
     try {
       const res = await getUserTaskInfo(this.queryTaskParams)
-      if (res !== '' && res !== null) {
-        this.UserTaskInfo = res
+      // if (res !== '' && res !== null) {
+      //   this.UserTaskInfo = res
+      //   // console.log('hmlog-->', 'UserTaskInfo:' + JSON.stringify(this.UserTaskInfo))
+      // }
+      if (res !== '') {
+        this.UserTaskInfo = JSON.parse(JSON.stringify(res.data))
         console.log('hmlog-->', 'UserTaskInfo:' + JSON.stringify(this.UserTaskInfo))
       }
     } catch (err) {

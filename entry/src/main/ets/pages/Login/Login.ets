@@ -16,10 +16,16 @@ struct Login {
       this.showLoading = true
       const token = await login(this.accountForm)
 
-      if (token !== '' && token !== null) {
-        console.log("hmlog-->", token)
-        AppStorage.set(TOKEN_KEY, token)
-        new UserSettingClass(getContext()).setUserToken(token)
+      // if (token !== '' && token !== null) {
+      //   console.log("hmlog-->", token)
+      //   AppStorage.set(TOKEN_KEY, token)
+      //   new UserSettingClass(getContext()).setUserToken(token)
+      //   router.replaceUrl({ url: 'pages/Index/Index' })
+      // }
+      if (token !== '') {
+        console.log("hmlog-->", 'token:' + token.data)
+        AppStorage.set(TOKEN_KEY, token.data)
+        new UserSettingClass(getContext()).setUserToken(token.data as string)
         router.replaceUrl({ url: 'pages/Index/Index' })
       }
       this.showLoading = false
