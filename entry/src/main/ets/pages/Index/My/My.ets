@@ -82,6 +82,46 @@ export struct My {
       .margin({top:-55,left:13,right:13,bottom:13})
       .padding(13)
 
+      // 3.综合信息
+      Column(){
+        Row(){
+          Text("车辆信息")
+            .fontWeight(400)
+            .fontColor($r('app.color.text_primary'))
+          Image($r("app.media.ic_btn_more"))
+            .width(24)
+            .aspectRatio(1)
+        }.width('100%')
+        .height(60)
+        .border({width:{bottom:1},color:$r('app.color.background_divider')})
+        .justifyContent(FlexAlign.SpaceBetween)
+        Row(){
+          Text("任务数据")
+            .fontWeight(400)
+            .fontColor($r('app.color.text_primary'))
+          Image($r("app.media.ic_btn_more"))
+            .width(24)
+            .aspectRatio(1)
+        }.width('100%')
+        .height(60)
+        .border({width:{bottom:1},color:$r('app.color.background_divider')})
+        .justifyContent(FlexAlign.SpaceBetween)
+        Row(){
+          Text("系统设置")
+            .fontWeight(400)
+            .fontColor($r('app.color.text_primary'))
+          Image($r("app.media.ic_btn_more"))
+            .width(24)
+            .aspectRatio(1)
+        }.width('100%')
+        .height(60)
+        .justifyContent(FlexAlign.SpaceBetween)
+      }
+      .backgroundColor($r('app.color.white'))
+      .margin({left:13,right:13})
+      .borderRadius(8)
+      .padding({ left:13,right:13,bottom:8,top:8 })
+
     }.width('100%')
     .height('100%')
     .backgroundColor($r('app.color.background_page'))
