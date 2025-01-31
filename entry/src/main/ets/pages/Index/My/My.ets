@@ -1,31 +1,52 @@
 import { HMCard, HMCardItem } from "../../../components"
 import promptAction from "@ohos.promptAction"
+import { getUserInfo } from "../../../api"
+import { UserInfo, UserInfoModel } from "../../../models"
 
 @Preview
 @Component
 export struct My {
+  @State userInfo: UserInfoModel = new UserInfoModel({} as UserInfo)
+
+  aboutToAppear(): void {
+    this.getUserInfo()
+  }
+
+  // 获取用户数据
+  async getUserInfo() {
+    try {
+      const res = await getUserInfo()
+      if (res !== '' && res !== null) {
+        this.userInfo = res
+      }
+      console.log('hmlog-->', "UserInfo" + JSON.stringify(this.userInfo))
+    } catch (err) {
+      console.error('hmlog-->', "getUserInfo Failed.Err:" + JSON.stringify(err))
+    }
+  }
+
   build() {
     Column() {
       // 1.基本信息
       Column() {
         // 头像
-        Image($r('app.media.ic_avatar_driver'))
+        Image(this.userInfo.avatar || $r('app.media.ic_avatar_driver'))
           .width(68)
           .aspectRatio(1)
           .borderRadius(34)
           .backgroundColor(Color.White)
-        Text('司机')
+        Text(this.userInfo.name || '司机名称')
           .fontSize(18)
           .fontWeight(FontWeight.Bold)
           .lineHeight(25)
           .fontColor($r('app.color.white'))
           .margin({ top: 9, bottom: 9 })
-        Text('司机编号：111111')
+        Text(`司机编号：${this.userInfo.number}`)
           .fontSize(14)
           .fontWeight(400)
           .lineHeight(20)
           .fontColor($r('app.color.white'))
-        Text('手机号：111111')
+        Text(`手机号：${this.userInfo.phone}`)
           .fontSize(14)
           .fontWeight(400)
           .lineHeight(20)
