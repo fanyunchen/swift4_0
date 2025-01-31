@@ -1,5 +1,5 @@
-export class TabClass{
-  title:string = ''
-  name:string = ''
-  icon?:ResourceStr = ''
+export class TabClass {
+  title: string = ''
+  name: string = ''
+  icon?: ResourceStr = ''
 }

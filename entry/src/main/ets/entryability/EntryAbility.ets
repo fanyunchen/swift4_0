@@ -38,15 +38,15 @@ export default class EntryAbility extends UIAbility {
     const result = await userSetting.getUserAd()
 
     // 3.判断是否需要展示广告
-    if (result.showAd){
+    if (result.showAd) {
       windowStage.loadContent("pages/Start/Start")
-    }else {
+    } else {
       // 获取用户令牌
       const token = await userSetting.getUserToken()
-      if (token === ''){
+      if (token === '') {
         // 用户未登录
         windowStage.loadContent("pages/Login/Login")
-      }else {
+      } else {
         // 用户已登录
         windowStage.loadContent('pages/Index/Index', (err) => {
           if (err.code) {

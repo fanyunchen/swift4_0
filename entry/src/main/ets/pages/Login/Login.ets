@@ -9,7 +9,7 @@ import promptAction from '@ohos.promptAction';
 @Component
 struct Login {
   @State showLoading: boolean = false;
-  @State accountForm:LoginFormModel = new LoginFormModel({account:'',password:''})
+  @State accountForm: LoginFormModel = new LoginFormModel({ account: '', password: '' })
 
   async login() {
     try {
@@ -17,15 +17,15 @@ struct Login {
       const token = await login(this.accountForm)
 
       if (token !== '' && token !== null) {
-        console.log("hmlog-->",token)
-        AppStorage.set(TOKEN_KEY,token)
+        console.log("hmlog-->", token)
+        AppStorage.set(TOKEN_KEY, token)
         new UserSettingClass(getContext()).setUserToken(token)
-        router.replaceUrl({url:'pages/Index/Index'})
+        router.replaceUrl({ url: 'pages/Index/Index' })
       }
       this.showLoading = false
     } catch (err) {
-      promptAction.showToast({message:JSON.stringify(err)})
-      console.error("hmlog-->","login Failed.Err:" + JSON.stringify(err))
+      promptAction.showToast({ message: JSON.stringify(err) })
+      console.error("hmlog-->", "login Failed.Err:" + JSON.stringify(err))
       this.showLoading = false
     }
   }
@@ -58,19 +58,19 @@ struct Login {
 
       TextInput({ placeholder: '请输入账号' })
         .inputStyles()
-        .onChange((value)=>{
+        .onChange((value) => {
           this.accountForm.account = value
         })
 
       TextInput({ placeholder: '请输入密码' })
         .inputStyles()
         .type(InputType.Password)
-        .onChange((value)=>{
+        .onChange((value) => {
           this.accountForm.password = value
         })
-        .onSubmit(()=>{
+        .onSubmit(() => {
           // 回车登录
-          if (this.accountForm.account!=='' && this.accountForm.password !== '') {
+          if (this.accountForm.account !== '' && this.accountForm.password !== '') {
             this.login()
           }
         })
@@ -90,10 +90,10 @@ struct Login {
       }
       .width("100%")
       .height(45)
-      .enabled(this.accountForm.account!=='' && this.accountForm.password !== '')
+      .enabled(this.accountForm.account !== '' && this.accountForm.password !== '')
       .margin({ top: 50 })
       .backgroundColor($r('app.color.primary'))
-      .onClick(async ()=>{
+      .onClick(async () => {
         this.login()
       })
     }
