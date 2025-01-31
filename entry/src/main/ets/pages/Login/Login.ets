@@ -1,5 +1,6 @@
 import { LoginFormModel } from '../../models';
 import { http } from '@kit.NetworkKit';
+import { Request } from '../../utils';
 
 @Entry
 @Component
@@ -66,26 +67,28 @@ struct Login {
       .backgroundColor($r('app.color.primary'))
       .onClick(async ()=>{
         this.showLoading = true
-        // 调用服务端的后台接口完成用户身份的验证
-        const loginUrl = "http://122.51.240.24:31007/driver/login/account"
-        // 1.创建请求对象，注意：每次请求都需要创建一个新的，不能重复使用
-        const httpRequest = http.createHttp()
-        // 2.设置请求头
-        const config:http.HttpRequestOptions = {
-          method:http.RequestMethod.POST,
-          header:{
-            "Content-Type":"application/json",  // 请求数据类型
-            "Authorization":''  // 令牌
-          },
-          extraData:this.accountForm
-        }
-        // 3.发送请求
-        const res = await httpRequest.request(loginUrl,config)
-        // 4.解析请求结果
-        AlertDialog.show({message:JSON.stringify(res,null,2)})
-
-        // 5.关闭请求对象
-        httpRequest.destroy()
+        // // 调用服务端的后台接口完成用户身份的验证
+        // const loginUrl = "http://122.51.240.24:31007/driver/login/account"
+        // // 1.创建请求对象，注意：每次请求都需要创建一个新的，不能重复使用
+        // const httpRequest = http.createHttp()
+        // // 2.设置请求头
+        // const config:http.HttpRequestOptions = {
+        //   method:http.RequestMethod.POST,
+        //   header:{
+        //     "Content-Type":"application/json",  // 请求数据类型
+        //     "Authorization":''  // 令牌
+        //   },
+        //   extraData:this.accountForm
+        // }
+        // // 3.发送请求
+        // const res = await httpRequest.request(loginUrl,config)
+        // // 4.解析请求结果
+        // AlertDialog.show({message:JSON.stringify(res,null,2)})
+        //
+        // // 5.关闭请求对象
+        // httpRequest.destroy()
+        const token = await Request.post<string>("/login/account",this.accountForm)
+        AlertDialog.show({message:token})
 
         this.showLoading = false
       })

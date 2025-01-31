@@ -1,11 +1,14 @@
 // 封装网络请求的工具
 import { BASE_URL, TOKEN_KEY } from "../constants";
 import { http } from "@kit.NetworkKit";
+import promptAction from "@ohos.promptAction";
+import { UserSettingClass } from ".";
+import { ResponseData } from "../models";
 
 /**
  * 实现网络请求的方法
  */
-export function requestTHttp(
+export async function requestTHttp<T>(
   url:string,
   method:http.RequestMethod = http.RequestMethod.GET,
   data?:object
@@ -42,7 +45,50 @@ export function requestTHttp(
     extraData:method === http.RequestMethod.GET ? "" : data // get请求参数应在地址栏中
   }
 
-  httpRequest.request(urlStr,config)
+  try {
+    // 3.发送请求
+    const res = await httpRequest.request(urlStr, config)
+    // 4.解析结果
+    if (res.responseCode === 401) {
+      promptAction.showToast({message:'未授权或token失效'})
+      AppStorage.set(TOKEN_KEY,'')  // 清空本地缓存中的token
+      new UserSettingClass(getContext()).setUserToken('') // 清空首选项中token
+      return ''
+    }else if(res.responseCode === 404){
+      // 地址错误或找不到资源地址
+      promptAction.showToast({message:'请求地址错误'})
+      return ''
+    }else {
+      // 请求成功
+      const result = JSON.parse(res.result.toString()) as ResponseData<T>
+      if (result.code === 200) {
+        // 执行成功
+        return result.data
+      }else {
+        promptAction.showToast({message:result.msg})
+        return ''
+      }
+    }
+  } catch (err) {
+    promptAction.showToast({message:JSON.stringify(err)})
+    return ''
+  } finally {
+    // 关闭请求
+    httpRequest.destroy()
+  }
+}
 
-
+export class Request {
+  static async get<T>(url:string,data?:object){
+    return await requestTHttp<T>(url,http.RequestMethod.GET,data)
+  }
+  static async post<T>(url:string,data?:object){
+    return await requestTHttp<T>(url,http.RequestMethod.POST,data)
+  }
+  static async delete<T>(url:string,data?:object){
+    return await requestTHttp<T>(url,http.RequestMethod.DELETE,data)
+  }
+  static async put<T>(url:string,data?:object){
+    return  await requestTHttp<T>(url,http.RequestMethod.PUT,data)
+  }
 }
