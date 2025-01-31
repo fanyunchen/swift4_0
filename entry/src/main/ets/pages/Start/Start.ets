@@ -36,7 +36,7 @@ struct Start {
     if (token === '') {
       router.replaceUrl({url:'pages/Login/Login'})
     }else {
-      router.replaceUrl({url:'pages/Index'})
+      router.replaceUrl({url:'pages/Index/Index'})
     }
   }
 

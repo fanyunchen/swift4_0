@@ -20,7 +20,7 @@ struct Login {
         console.log("hmlog-->",token)
         AppStorage.set(TOKEN_KEY,token)
         new UserSettingClass(getContext()).setUserToken(token)
-        router.replaceUrl({url:'pages/Index'})
+        router.replaceUrl({url:'pages/Index/Index'})
       }
       this.showLoading = false
     } catch (err) {
