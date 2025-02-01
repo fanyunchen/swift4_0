@@ -27,6 +27,7 @@ export struct TaskList {
   } as TaskListParams)
   @State endLoading: boolean = false // 是否在加载中
   @State startLoading: boolean = false // 是否在加载中
+  @State startText: string = '继续下拉实现刷新' // 上拉刷新提示文字
 
   // 获取待提货的任务数据列表
   async getTaskList() {
@@ -72,13 +73,16 @@ export struct TaskList {
       List({ scroller: this.scroller, initialIndex: 1 }) {
         // 顶部刷新
         ListItem() {
-          Column() {
+          Row({ space: 10 }) {
+            Text(this.startText)
             LoadingProgress()
               .width(40)
               .aspectRatio(1)
-          }.height(30)
+          }.height(50)
+          .justifyContent(FlexAlign.Center)
+          .alignItems(VerticalAlign.Center)
           .width('100%')
-        }.height(30)
+        }
 
         ForEach(this.taskListData, (item: TaskInfoItem) => {
           ListItem() {
@@ -108,12 +112,15 @@ export struct TaskList {
       .onReachStart(async () => {
         if (!this.startLoading) {
           this.startLoading = true
+          this.startText = "刷新中..."
+          this.endLoading = true
           // 刷新数据
           await this.getTaskList()
           this.nextQueryParams.page = 2
           const timer = setTimeout(() => {
             this.nullScroller.scrollToIndex(1)
             this.startLoading = false
+            this.startText = "继续下拉实现刷新"
             clearTimeout(timer)
           }, 2000)
         }
@@ -121,13 +128,16 @@ export struct TaskList {
     } else {
       List({ scroller: this.nullScroller, initialIndex: 1 }) {
         ListItem() {
-          Column() {
+          Row({ space: 10 }) {
+            Text(this.startText)
             LoadingProgress()
               .width(40)
               .aspectRatio(1)
-          }.height(30)
+          }.height(50)
+          .justifyContent(FlexAlign.Center)
+          .alignItems(VerticalAlign.Center)
           .width('100%')
-        }.height(30)
+        }
 
         ListItem() {
           Column() {
@@ -144,12 +154,14 @@ export struct TaskList {
       .onReachStart(async () => {
         if (!this.startLoading) {
           this.startLoading = true
+          this.startText = "刷新中..."
           // 刷新数据
           await this.getTaskList()
           this.nextQueryParams.page = 2
           const timer = setTimeout(() => {
             this.nullScroller.scrollToIndex(1)
             this.startLoading = false
+            this.startText = "继续下拉实现刷新"
             clearTimeout(timer)
           }, 2000)
         }
