@@ -23,7 +23,6 @@ struct Setting {
           fontColor: $r('app.color.primary'),
           action: () => {
             this.logOut()
-            promptAction.showToast({ message: '用户已登出' })
           }
         }
       ]
@@ -36,13 +35,18 @@ struct Setting {
   /**
    * 用户退出
    */
-  logOut() {
+  async logOut() {
     // 清空token
-    AppStorage.set(TOKEN_KEY, '') // 清空本地缓存
-    new UserSettingClass(getContext()).setUserToken("") // 清空首选项
-    // 跳转页面
-    router.replaceUrl({ url: "pages/Login/Login" })
-    router.clear()
+    AppStorage.set(TOKEN_KEY, "") // 清空本地缓存
+    try {
+      await new UserSettingClass(getContext()).setUserToken("") // 清空首选项
+      // 跳转页面
+      router.replaceUrl({ url: "pages/Login/Login" })
+      router.clear()
+      promptAction.showToast({ message: '用户已登出' })
+    } catch (err) {
+      console.error('hmlog-->', "logOut Failed.Err:" + JSON.stringify(err))
+    }
   }
 
   build() {

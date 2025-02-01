@@ -32,9 +32,9 @@ export struct HMConfirm {
             color: $r('app.color.background_divider')
           })
           .layoutWeight(1)
-          .onClick(() => {
+          .onClick(async () => {
             if (item.action) {
-              item.action
+              await item.action()
             }
             this.controller.close()
           })
