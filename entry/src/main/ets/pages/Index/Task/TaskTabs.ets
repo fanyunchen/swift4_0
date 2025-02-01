@@ -1,4 +1,5 @@
 import { TabClass } from "../../../models"
+import { TaskList } from "./TaskList"
 
 @Component
 export struct TaskTabs {
@@ -51,7 +52,14 @@ export struct TaskTabs {
       Tabs({ barPosition: BarPosition.Start, index: $$this.currentIndex }) {
         ForEach(this.tabsData, (item: TabClass, index) => {
           TabContent() {
-            Text(item.name)
+            if (item.name === "waiting") {
+              // 待提货区域
+              TaskList()
+            } else if (item.name === "line") {
+              // 在途区域
+            } else {
+              // 已完成区域
+            }
           }.tabBar(this.getTabBar(item, index))
 
         })
