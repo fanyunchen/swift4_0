@@ -1,5 +1,6 @@
 import { TabClass } from '../../models'
 import { My } from './My/My'
+import { TaskTabs } from './Task/TaskTabs'
 
 @Entry
 @Component
@@ -37,21 +38,24 @@ struct Index {
   }
 
   build() {
-    Tabs({ barPosition: BarPosition.End }) {
-      ForEach(this.tabsData, (item: TabClass, index) => {
-        TabContent() {
-          if (item.name === 'task') {
-            Text('任务内容')
-          } else if (item.name === 'message') {
-            Text('消息内容')
-          } else {
-            My()
-          }
-        }.tabBar(this.getTabBar(item, index))
+    Stack() {
+      Tabs({ barPosition: BarPosition.End }) {
+        ForEach(this.tabsData, (item: TabClass, index) => {
+          TabContent() {
+            if (item.name === 'task') {
+              TaskTabs()
+            } else if (item.name === 'message') {
+              Text('消息内容')
+            } else {
+              My()
+            }
+          }.tabBar(this.getTabBar(item, index))
+        })
+      }.onChange((index) => {
+        this.currentIndex = index
       })
-    }.onChange((index) => {
-      this.currentIndex = index
-    })
-    .animationDuration(300)
+      .scrollable(false)
+      .animationDuration(300)
+    }
   }
 }
