@@ -1,5 +1,6 @@
 import { getTaskList } from '../../../api'
 import { TaskInfoItem, TaskListParams, TaskListParamsModel, TaskTypeEnum } from '../../../models'
+import { TaskItemCard } from './TaskItemCard'
 
 @Component
 export struct TaskList {
@@ -26,6 +27,12 @@ export struct TaskList {
   }
 
   build() {
-    Text(JSON.stringify(this.taskListData))
+    List() {
+      ForEach(this.taskListData, (item: TaskInfoItem) => {
+        ListItem() {
+          TaskItemCard()
+        }
+      })
+    }
   }
 }

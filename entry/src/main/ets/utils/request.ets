@@ -66,6 +66,7 @@ export async function requestTHttp<T>(
       const result = JSON.parse(res.result.toString()) as ResponseData<T>
       if (result.code === 200) {
         // 执行成功
+        console.log('hmlog-->', "result:" + JSON.stringify(result))
         console.log('hmlog-->', "result.data:" + JSON.stringify(result.data))
         return result.data
       } else {
