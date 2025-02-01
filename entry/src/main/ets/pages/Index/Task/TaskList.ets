@@ -1,7 +1,7 @@
 import { getTaskList } from '../../../api'
 import { TaskInfoItem, TaskListParams, TaskListParamsModel, TaskTypeEnum } from '../../../models'
 import { TaskItemCard } from './TaskItemCard'
-import promptAction from '@ohos.promptAction'
+import { HMLoading } from '../../../components'
 
 @Component
 export struct TaskList {
@@ -25,7 +25,8 @@ export struct TaskList {
     page: 2,
     pageSize: 5
   } as TaskListParams)
-  @State loading: boolean = false // 是否在加载中
+  @State endLoading: boolean = false // 是否在加载中
+  @State startLoading: boolean = false // 是否在加载中
 
   // 获取待提货的任务数据列表
   async getTaskList() {
@@ -51,9 +52,25 @@ export struct TaskList {
     this.getTaskList()
   }
 
+  @Builder
+  getBottomDisplay() {
+    Row({ space: 20 }) {
+      if (this.endLoading) {
+        Text(this.allPages < this.nextQueryParams.page ? "我已经到底啦！" : "数据加载中...")
+        if (this.allPages >= this.nextQueryParams.page) {
+          HMLoading({ hWidth: 20 })
+        }
+      }
+    }.width('100%')
+    .height(50)
+    .justifyContent(FlexAlign.Center)
+    .alignItems(VerticalAlign.Center)
+  }
+
   build() {
     if (this.taskListData !== null) {
       List({ scroller: this.scroller, initialIndex: 1 }) {
+        // 顶部刷新
         ListItem() {
           Column() {
             LoadingProgress()
@@ -68,29 +85,35 @@ export struct TaskList {
             TaskItemCard({ taskItemData: item })
           }
         })
+
+        // 底部加载
+        ListItem() {
+          this.getBottomDisplay()
+        }
       }
       // 当list到底部时触发，可实现上拉加载新数据（获取下一页数据）
       .onReachEnd(async () => {
         if (this.allPages >= this.nextQueryParams.page) {
           // 查询的页码没有超过总页数
-          if (!this.loading) {
+          if (!this.endLoading) {
             // 当前加载中
-            this.loading = true
+            this.endLoading = true
             await this.getNextTaskList()
             // 当前加载完毕
-            this.loading = false
+            this.endLoading = this.allPages < this.nextQueryParams.page ? true : false
           }
         }
       })
       // 当list到顶部时触发，可实现上拉刷新数据
       .onReachStart(async () => {
-        if (!this.loading) {
-          this.loading = true
+        if (!this.startLoading) {
+          this.startLoading = true
           // 刷新数据
           await this.getTaskList()
+          this.nextQueryParams.page = 2
           const timer = setTimeout(() => {
             this.nullScroller.scrollToIndex(1)
-            this.loading = false
+            this.startLoading = false
             clearTimeout(timer)
           }, 2000)
         }
@@ -119,13 +142,14 @@ export struct TaskList {
         .height('100%')
       }
       .onReachStart(async () => {
-        if (!this.loading) {
-          this.loading = true
+        if (!this.startLoading) {
+          this.startLoading = true
           // 刷新数据
           await this.getTaskList()
+          this.nextQueryParams.page = 2
           const timer = setTimeout(() => {
             this.nullScroller.scrollToIndex(1)
-            this.loading = false
+            this.startLoading = false
             clearTimeout(timer)
           }, 2000)
         }
