@@ -142,6 +142,7 @@ export class RequestAxios {
       console.log('hmlog-->', "axios get res.data:" + JSON.stringify(res.data))
       return res.data
     } catch (err) {
+      promptAction.showToast({ message: err.message })
       console.error('hmlog-->', "axios get failed.Err:" + JSON.stringify(err))
       return ''
     }
@@ -165,6 +166,7 @@ export class RequestAxios {
         return ''
       }
     } catch (err) {
+      promptAction.showToast({ message: err.message })
       console.error('hmlog-->', "axios post failed.Err:" + JSON.stringify(err))
       return ''
     }

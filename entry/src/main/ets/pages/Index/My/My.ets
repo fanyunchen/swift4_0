@@ -2,6 +2,7 @@ import { HMCard, HMCardItem } from "../../../components"
 import promptAction from "@ohos.promptAction"
 import { getUserInfo, getUserTaskInfo } from "../../../api"
 import { UserInfo, UserInfoModel, UserTaskInfo, UserTaskInfoModel, UserTaskInfoParamsModel } from "../../../models"
+import router from "@ohos.router"
 
 @Preview
 @Component
@@ -150,7 +151,7 @@ export struct My {
         HMCardItem({ leftText: '任务数据', rightText: "1000", showRightIcon: false })
         HMCardItem({
           leftText: '系统设置', click: () => {
-            promptAction.showToast({ message: '点击系统设置' })
+            router.pushUrl({ url: "pages/Setting/Setting" })
           }, showBorder: false
         })
       }
