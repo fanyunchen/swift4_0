@@ -1,10 +1,22 @@
+import { TaskInfoItem, TaskInfoItemModel } from "../../../models"
+
 @Preview
 @Component
 export struct TaskItemCard {
+  taskItemData: TaskInfoItem = {} as TaskInfoItem
+
+  // 获取当前任务的提货状态
+  getBtnEnable() {
+    if (this.taskItemData.enablePickUp) {
+      return true
+    }
+    return false
+  }
+
   build() {
     Column() {
       Row() {
-        Text("任务编号：111111111")
+        Text(`任务编号：${this.taskItemData.transportTaskId}`)
           .fontWeight(500)
           .lineHeight(22)
           .fontColor($r('app.color.text_primary'))
@@ -19,7 +31,7 @@ export struct TaskItemCard {
           .fontColor($r('app.color.white'))
           .backgroundColor($r('app.color.text_primary'))
           .textAlign(TextAlign.Center)
-        Text("111111111")
+        Text(this.taskItemData.startAddress.toString())
           .margin({ left: 12 })
           .fontSize(14)
           .fontColor($r('app.color.text_secondary'))
@@ -35,7 +47,7 @@ export struct TaskItemCard {
           .fontColor($r('app.color.white'))
           .backgroundColor($r('app.color.primary'))
           .textAlign(TextAlign.Center)
-        Text("111111111")
+        Text(this.taskItemData.endAddress.toString())
           .margin({ left: 12 })
           .fontSize(14)
           .fontColor($r('app.color.text_secondary'))
@@ -57,7 +69,7 @@ export struct TaskItemCard {
           Text("提货时间")
             .fontSize(14)
             .fontColor($r('app.color.text_secondary'))
-          Text("2022.05.04 13:00")
+          Text(this.taskItemData.planDepartureTime.toString())
             .fontSize(14)
             .fontColor($r('app.color.text_secondary'))
             .margin({ top: 4 })
@@ -68,6 +80,7 @@ export struct TaskItemCard {
           .fontColor($r('app.color.white'))
           .fontSize(14)
           .height(32)
+          .enabled(this.getBtnEnable())
       }.width('100%')
       .justifyContent(FlexAlign.SpaceBetween)
 

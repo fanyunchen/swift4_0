@@ -2,30 +2,24 @@
  * 任务列表请求参数
  */
 export interface TaskListParams {
-  endTime: string | null // 结束时间 例：2022-07-12
-  page: number // 页码
-  pageSize: number // 页面大小
-  startTime: string | null // 开始时间 例：2022-06-12
-  status: number // 作业状态：1为待提货、2为在途（在途和已交付）、3为改派、5为已作废、6为已完成（已回车登记）
-  transportTaskId: string | null // 运输任务id
-}
+  /** 结束时间 */
+  endTime: string | null;
 
-export class TaskListParamsModel implements TaskListParams {
-  endTime: string | null = null
-  page: number = 0
-  pageSize: number = 0
-  startTime: string | null = null
-  status: number = 1
-  transportTaskId: string | null = null
+  /** 页码 */
+  page: number;
 
-  constructor(model: TaskListParams) {
-    this.endTime = model.endTime
-    this.page = model.page
-    this.pageSize = model.pageSize
-    this.startTime = model.startTime
-    this.status = model.status
-    this.transportTaskId = model.transportTaskId
-  }
+  /** 页面大小 */
+  pageSize: number;
+
+  /** 开始时间 */
+  startTime: string | null;
+
+  /** 作业状态，1为待提货）、2为在途(在途和已交付)、3为改派、5为已作废、6为已完成（已回车登
+   记） */
+  status: number;
+
+  /** 运输任务id */
+  transportTaskId: string | null;
 }
 
 /**
@@ -99,6 +93,24 @@ export interface TaskInfoItem {
 
   /** 运输任务id */
   transportTaskId: string;
+}
+
+export class TaskListParamsModel implements TaskListParams {
+  endTime: string | null = null
+  page: number = 0
+  pageSize: number = 0
+  startTime: string | null = null
+  status: number = 0
+  transportTaskId: string | null = null
+
+  constructor(model: TaskListParams) {
+    this.endTime = model.endTime
+    this.page = model.page
+    this.pageSize = model.pageSize
+    this.startTime = model.startTime
+    this.status = model.status
+    this.transportTaskId = model.transportTaskId
+  }
 }
 
 export class TaskListDataModel implements TaskListData {
