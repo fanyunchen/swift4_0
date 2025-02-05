@@ -5,6 +5,7 @@ import promptAction from "@ohos.promptAction";
 import { UserSettingClass } from ".";
 import { ResponseData } from "../models";
 import axios, { AxiosInstance, AxiosResponse } from "@ohos/axios";
+import router from "@ohos.router";
 
 /**
  * 实现网络请求的方法
@@ -55,6 +56,9 @@ export async function requestTHttp<T>(
       console.log('hmlog-->', '未授权或token失效')
       AppStorage.set(TOKEN_KEY, '') // 清空本地缓存中的token
       new UserSettingClass(getContext()).setUserToken('') // 清空首选项中token
+      router.replaceUrl({
+        url: 'pages/Login/Login'
+      })
       return ''
     } else if (res.responseCode === 404) {
       // 地址错误或找不到资源地址

@@ -110,7 +110,7 @@ export struct My {
             }
 
             Column({ space: 17 }) {
-              Text(this.UserTaskInfo.taskAmounts?.toString() || '0')
+              Text(this.UserTaskInfo.completedAmounts?.toString() || '0')
                 .fontSize(18)
                 .fontColor($r('app.color.text_primary'))
                 .lineHeight(25)

@@ -1,4 +1,5 @@
 import { TaskInfoItem, TaskInfoItemModel } from "../../../models"
+import router from "@ohos.router"
 
 @Preview
 @Component
@@ -11,6 +12,18 @@ export struct TaskItemCard {
       return true
     }
     return false
+  }
+
+  // 去提货
+  toPickUp() {
+    if (this.getBtnEnable()) {
+      router.pushUrl({
+        url: "pages/TaskDetail/TaskDetail",
+        params: {
+          id: this.taskItemData.id    // 当前任务编号
+        }
+      })
+    }
   }
 
   build() {
@@ -81,6 +94,9 @@ export struct TaskItemCard {
           .fontSize(14)
           .height(32)
           .enabled(this.getBtnEnable())
+          .onClick(() => {
+            this.toPickUp()
+          })
       }.width('100%')
       .justifyContent(FlexAlign.SpaceBetween)
 

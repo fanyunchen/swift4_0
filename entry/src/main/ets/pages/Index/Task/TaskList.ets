@@ -14,10 +14,11 @@ export struct TaskList {
   // 接收获取到的任务列表
   @State taskListData: TaskInfoItem[] = []
   // 请求参数
-  @State queryParams: TaskListParamsModel = new TaskListParamsModel({
+  @State
+  queryParams: TaskListParams = new TaskListParamsModel({
     status: TaskTypeEnum.Waiting,
     page: 1,
-    pageSize: 5
+    pageSize: 5,
   } as TaskListParams)
   // 查询下一页的请求参数
   @State nextQueryParams: TaskListParamsModel = new TaskListParamsModel({
