@@ -34,7 +34,7 @@ struct TaskDetail {
   }
 
   @Builder
-  basicFactsItem(item: basicFactsItemBuilderClass) {
+  builderItem(item: basicFactsItemBuilderClass) {
     Row() {
       Text(item.title)
         .fontSize(14)
@@ -116,9 +116,9 @@ struct TaskDetail {
         .color($r('app.color.background_divider'))
         .margin({ top: 20, left: 8, right: 8 })
 
-      this.basicFactsItem({ title: '任务编号', value: this.taskDetailData.transportTaskId })
-      this.basicFactsItem({ title: '联系人', value: this.taskDetailData.startHandoverName })
-      this.basicFactsItem({
+      this.builderItem({ title: '任务编号', value: this.taskDetailData.transportTaskId })
+      this.builderItem({ title: '联系人', value: this.taskDetailData.startHandoverName })
+      this.builderItem({
         title: '联系电话',
         value: this.taskDetailData.startHandoverPhone,
         icon: $r('app.media.ic_phone'),
@@ -128,9 +128,56 @@ struct TaskDetail {
           call.makeCall(this.taskDetailData.startHandoverPhone)
         }
       })
-      this.basicFactsItem({ title: '提货时间', value: this.taskDetailData.planDepartureTime! })
-      this.basicFactsItem({ title: '预计送达时间', value: this.taskDetailData.planArrivalTime! })
+      this.builderItem({ title: '提货时间', value: this.taskDetailData.planDepartureTime! })
+      this.builderItem({ title: '预计送达时间', value: this.taskDetailData.planArrivalTime! })
     }.width('100%')
+  }
+
+  /**
+   * 车辆司机信息展示
+   */
+  @Builder
+  driverAndVehicle() {
+    this.builderItem({ title: '车牌号', value: this.taskDetailData.licensePlate })
+    this.builderItem({ title: '司机姓名', value: this.taskDetailData.driverName })
+  }
+
+  /**
+   * 运输路线展示
+   */
+  @Builder
+  transportRoute() {
+    Row({ space: 30 }) {
+      Column({ space: 5 }) {
+        Text(this.taskDetailData.startProvince)
+          .fontSize(16)
+          .fontWeight(FontWeight.Bold)
+        Text(this.taskDetailData.startCity)
+          .fontSize(14)
+      }
+
+      Image($r('app.media.ic_right_arrow'))
+        .width(40)
+        .aspectRatio(1)
+
+      Column({ space: 5 }) {
+        Text(this.taskDetailData.endProvince)
+          .fontSize(16)
+          .fontWeight(FontWeight.Bold)
+        Text(this.taskDetailData.endCity)
+          .fontSize(14)
+      }
+    }.width('100%')
+    .justifyContent(FlexAlign.Center)
+    .alignItems(VerticalAlign.Center)
+  }
+
+  /**
+   * 提货信息
+   */
+  @Builder
+  getTransLineContent() {
+
   }
 
   build() {
@@ -146,11 +193,15 @@ struct TaskDetail {
             }
 
             HMToggleCard({ title: "车辆司机信息", toggleCard: false }) {
-              Text(JSON.stringify(this.taskDetailData, null, 2))
+              this.driverAndVehicle()
             }
 
             HMToggleCard({ title: "运输路线", toggleCard: false }) {
-              Text(JSON.stringify(this.taskDetailData, null, 2))
+              this.transportRoute()
+            }
+
+            HMToggleCard({ title: "提货信息", toggleCard: false }) {
+              this.getTransLineContent()
             }
           }
           .padding({ bottom: 120 })
