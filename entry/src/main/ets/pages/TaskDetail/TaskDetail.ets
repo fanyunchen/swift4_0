@@ -1,8 +1,9 @@
-import { HMNavBar, HMToggleCard } from '../../components'
+import { HMNavBar, HMToggleCard, HMUpload } from '../../components'
 import router from '@ohos.router'
 import { CommonRouterParams, TaskDetailInfo, TaskDetailInfoModel } from '../../models'
 import { getTaskDetail } from '../../api'
 import { call } from '@kit.TelephonyKit'
+import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../../constants'
 
 // 任务详情页
 @Entry
@@ -177,12 +178,44 @@ struct TaskDetail {
    */
   @Builder
   getTransLineContent() {
+    HMUpload({ title: '请拍照上传回单凭证' })
+    HMUpload({ title: '请拍照上传货品凭证' })
+  }
 
+  /**
+   * 底部按钮
+   */
+  @Builder
+  getButtonBtn() {
+    Row() {
+      Button('延迟提货')
+        .backgroundColor($r('app.color.btn_gray'))
+        .height(50)
+        .fontColor($r('app.color.text_primary'))
+        .width(125)
+      Button('提货')
+        .backgroundColor($r('app.color.primary_disabled'))
+        .fontColor($r('app.color.white'))
+        .height(50)
+        .layoutWeight(1)
+        .margin({ left: 20 })
+    }
+    .padding({ left: 15, right: 15 })
+    .width('100%')
+    .height(70 + Number(AppStorage.get<number>(APP_BOTTOM_HEIGHT)))
+    .position({ y: '100%' })
+    .translate({ y: -(70 + Number(AppStorage.get<number>(APP_BOTTOM_HEIGHT))) })
+    .justifyContent(FlexAlign.SpaceBetween)
+    .backgroundColor($r('app.color.white'))
   }
 
   build() {
     if (this.show) {
       Column() {
+        Row().width('100%')
+          .height(AppStorage.get<number>(APP_TOP_HEIGHT))
+          .backgroundColor($r('app.color.white'))
+        
         HMNavBar({ title: "任务详情" })
 
         Scroll(this.scroller) {
@@ -204,8 +237,11 @@ struct TaskDetail {
               this.getTransLineContent()
             }
           }
-          .padding({ bottom: 120 })
+          .padding({ bottom: 200 })
         }
+        .scrollBar(BarState.Off)
+
+        this.getButtonBtn()
       }
       .height('100%')
       .width('100%')

@@ -1,5 +1,5 @@
 import { login } from '../../api';
-import { TOKEN_KEY } from '../../constants';
+import { APP_TOP_HEIGHT, TOKEN_KEY } from '../../constants';
 import { LoginFormModel } from '../../models';
 import { UserSettingClass } from '../../utils';
 import router from '@ohos.router';
@@ -38,6 +38,8 @@ struct Login {
 
   build() {
     Column() {
+      Row().width('100%')
+        .height(AppStorage.get<number>(APP_TOP_HEIGHT))
       // 标题
       Text('顺风速达')
         .fontColor($r('app.color.text_primary'))

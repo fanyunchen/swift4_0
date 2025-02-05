@@ -3,6 +3,7 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { AdvertClass } from '../models';
 import { UserSettingClass } from '../utils';
+import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../constants';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -17,6 +18,20 @@ export default class EntryAbility extends UIAbility {
   async onWindowStageCreate(windowStage: window.WindowStage): Promise<void> {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
+
+    // 实现全屏效果
+    windowStage.getMainWindowSync().setWindowLayoutFullScreen(true)
+    // 获取头部高度
+    // windowStage.getMainWindowSync().getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM).topRect.height 结果单位是像素
+    let topHeight =
+      px2vp(windowStage.getMainWindowSync().getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM).topRect.height)
+    let bottomHeight =
+      px2vp(windowStage.getMainWindowSync()
+        .getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR)
+        .bottomRect
+        .height)
+    AppStorage.setOrCreate<number>(APP_TOP_HEIGHT, topHeight)
+    AppStorage.setOrCreate<number>(APP_BOTTOM_HEIGHT, bottomHeight)
 
     // 判断是否加载广告
     // // 1.从后台服务中获取广告数据

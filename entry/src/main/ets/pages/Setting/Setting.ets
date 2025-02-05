@@ -2,7 +2,7 @@ import { HMCard, HMCardItem, HMNavBar } from '../../components'
 import router from '@ohos.router'
 import { HMConfirm } from '../../components'
 import promptAction from '@ohos.promptAction'
-import { TOKEN_KEY } from '../../constants'
+import { APP_TOP_HEIGHT, TOKEN_KEY } from '../../constants'
 import { UserSettingClass } from '../../utils'
 
 PersistentStorage.persistProp(TOKEN_KEY, '')
@@ -51,7 +51,12 @@ struct Setting {
 
   build() {
     Column({ space: 20 }) {
+      Row().width('100%')
+        .height(AppStorage.get<number>(APP_TOP_HEIGHT))
+        .backgroundColor($r('app.color.white'))
+
       HMNavBar({ title: "系统设置" })
+        .margin({ top: -20 })
 
       HMCard() {
         HMCardItem({ leftText: "换绑手机" })

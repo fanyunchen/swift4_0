@@ -1,6 +1,6 @@
 import { AdvertClass } from '../../models'
 import router from '@ohos.router'
-import { TOKEN_KEY } from '../../constants'
+import { APP_TOP_HEIGHT, TOKEN_KEY } from '../../constants'
 import { UserSettingClass } from '../../utils'
 
 // 这里练习从PersistentStorage中读取Token
@@ -46,10 +46,10 @@ struct Start {
       Text(`${this.adObj?.adTime} S后跳转`)
         .backgroundColor($r('app.color.background_page'))
         .padding({ left: 10, right: 10 })
-        .margin({ right: 20, top: 20 })
         .height(30)
         .fontSize(14)
         .borderRadius(15)
+        .margin({ top: Number(AppStorage.get<number>(APP_TOP_HEIGHT)) + 20, right: 20 })
         .textAlign(TextAlign.Center)
         .onClick(() => {
           clearInterval(this.timer)

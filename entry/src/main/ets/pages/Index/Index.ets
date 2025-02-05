@@ -1,3 +1,4 @@
+import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../../constants'
 import { TabClass } from '../../models'
 import { My } from './My/My'
 import { TaskTabs } from './Task/TaskTabs'
@@ -54,6 +55,7 @@ struct Index {
       }.onChange((index) => {
         this.currentIndex = index
       })
+      .padding({ bottom: AppStorage.get<number>(APP_BOTTOM_HEIGHT) })
       .scrollable(false)
       .animationDuration(300)
     }

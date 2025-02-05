@@ -1,6 +1,7 @@
 import { TabClass } from "../../../models"
 import { TaskList } from "./TaskList"
 import router from "@ohos.router"
+import { APP_TOP_HEIGHT } from "../../../constants"
 
 @Component
 export struct TaskTabs {
@@ -73,6 +74,7 @@ export struct TaskTabs {
       }.onChange((index) => {
         this.currentIndex = index
       })
+      .padding({ top: AppStorage.get<number>(APP_TOP_HEIGHT) })
       .backgroundColor($r('app.color.background_page'))
       .animationDuration(300)
 
@@ -81,10 +83,13 @@ export struct TaskTabs {
         ForEach(this.tabsData, (item: TabClass, index) => {
           this.getTabBar(item, index)
         })
-      }.width('100%')
+      }
+      .width('100%')
       .height(55)
-      .padding({ left: 20 })
+      .zIndex(999)
       .backgroundColor($r('app.color.background_page'))
+      .padding({ left: 20 })
+      .margin({ top: AppStorage.get<number>(APP_TOP_HEIGHT) })
     }
   }
 }

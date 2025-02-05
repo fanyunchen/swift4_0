@@ -11,3 +11,5 @@ export * from "./HMSkeleton"
 export * from "./HMLoading"
 
 export * from "./HMToggleCard"
+
+export * from "./HMUpload"
