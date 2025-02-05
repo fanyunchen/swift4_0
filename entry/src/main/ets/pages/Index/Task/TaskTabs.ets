@@ -1,5 +1,6 @@
 import { TabClass } from "../../../models"
 import { TaskList } from "./TaskList"
+import router from "@ohos.router"
 
 @Component
 export struct TaskTabs {
@@ -54,7 +55,13 @@ export struct TaskTabs {
           TabContent() {
             if (item.name === "waiting") {
               // 待提货区域
-              TaskList()
+              Column() {
+                Button('详情')
+                  .onClick(() => {
+                    router.pushUrl({ url: "pages/TaskDetail/TaskDetail" })
+                  })
+                TaskList()
+              }
             } else if (item.name === "line") {
               // 在途区域
             } else {
