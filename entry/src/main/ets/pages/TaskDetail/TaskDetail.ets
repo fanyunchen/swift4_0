@@ -1,4 +1,4 @@
-import { HMNavBar, HMToggleCard, HMUpload } from '../../components'
+import { HMNavBar, HMToggleCard, HMUpload, UploadFile } from '../../components'
 import router from '@ohos.router'
 import { CommonRouterParams, ImageList, TaskDetailInfo, TaskDetailInfoModel } from '../../models'
 import { getTaskDetail } from '../../api'
@@ -211,6 +211,9 @@ struct TaskDetail {
         .height(50)
         .enabled(this.getPickUpState())
         .layoutWeight(1)
+        .onClick(() => {
+          this.btnPickUp()
+        })
         .margin({ left: 20 })
     }
     .padding({ left: 15, right: 15 })
@@ -232,6 +235,16 @@ struct TaskDetail {
     } else {
       return false
     }
+  }
+
+  // 实现提货功能
+  btnPickUp() {
+    // 1.图片上传：将本地相册中的图片地址，上传到服务器获取到永久的图片地址
+    UploadFile(this.taskDetailData.cargoPickUpPictureList) // 提货凭证照片，获取永久地址
+    UploadFile(this.taskDetailData.cargoPictureList) // 提货照片获取永久地址
+    // 2.实现提货功能
+
+    console.log('hmlog-->', 'btnPickUp taskDetailData:' + JSON.stringify(this.taskDetailData))
   }
 
   build() {

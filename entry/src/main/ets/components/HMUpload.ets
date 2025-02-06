@@ -2,6 +2,9 @@ import { photoAccessHelper } from "@kit.MediaLibraryKit"
 import promptAction from "@ohos.promptAction"
 import { ImageList } from "../models"
 import { HMPreview } from "./HMPreview"
+import { fileIo } from "@kit.CoreFileKit"
+import { util } from "@kit.ArkTS"
+import { request } from "@kit.BasicServicesKit"
 
 @Component
 export struct HMUpload {
@@ -108,4 +111,31 @@ export struct HMUpload {
     }.width('100%')
     .alignItems(HorizontalAlign.Start)
   }
+}
+
+export const UploadFile = (list: ImageList[]) => {
+  // 将图片上拷贝到cache沙箱目录
+  const saveDir = getContext().cacheDir // 获取沙箱cache地址
+  const fileParams: request.File[] = []
+
+  list.forEach(image => {
+    // 读取相册图片
+    const file = fileIo.openSync(image.url, fileIo.OpenMode.READ_ONLY)
+
+    // 将图片写入沙箱cache中
+    const extName = image.url.split('.')[1]
+    const uniqueName = util.generateRandomUUID() + "." + extName // 随机生成一个唯一的文件名
+    fileIo.copyFileSync(file.fd, saveDir + "/" + uniqueName)
+
+    // 构建图片的file类型
+    fileParams.push({
+      filename: uniqueName,
+      type: extName,
+      uri: "internal://cache/" + uniqueName,
+      name: 'file'  // 和后端的上传接口参数是对应的
+    })
+    fileIo.closeSync(file)
+  })
+
+  // 调用后端接口实现图片上传
 }
