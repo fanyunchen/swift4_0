@@ -238,13 +238,15 @@ struct TaskDetail {
   }
 
   // 实现提货功能
-  btnPickUp() {
+  async btnPickUp() {
     // 1.图片上传：将本地相册中的图片地址，上传到服务器获取到永久的图片地址
-    UploadFile(this.taskDetailData.cargoPickUpPictureList) // 提货凭证照片，获取永久地址
-    UploadFile(this.taskDetailData.cargoPictureList) // 提货照片获取永久地址
+    const cargoPickUpPictureList =
+      await UploadFile(this.taskDetailData.cargoPickUpPictureList) // 提货凭证照片，获取永久地址
+    const cargoPictureList = await UploadFile(this.taskDetailData.cargoPictureList) // 提货照片获取永久地址
     // 2.实现提货功能
 
-    console.log('hmlog-->', 'btnPickUp taskDetailData:' + JSON.stringify(this.taskDetailData))
+    console.log('hmlog-->', JSON.stringify(cargoPickUpPictureList))
+    console.log('hmlog-->', JSON.stringify(cargoPictureList))
   }
 
   build() {

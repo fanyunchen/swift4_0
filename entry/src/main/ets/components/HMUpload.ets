@@ -5,6 +5,7 @@ import { HMPreview } from "./HMPreview"
 import { fileIo } from "@kit.CoreFileKit"
 import { util } from "@kit.ArkTS"
 import { request } from "@kit.BasicServicesKit"
+import { uploadImage } from "../api"
 
 @Component
 export struct HMUpload {
@@ -113,7 +114,7 @@ export struct HMUpload {
   }
 }
 
-export const UploadFile = (list: ImageList[]) => {
+export const UploadFile = async (list: ImageList[]) => {
   // 将图片上拷贝到cache沙箱目录
   const saveDir = getContext().cacheDir // 获取沙箱cache地址
   const fileParams: request.File[] = []
@@ -138,4 +139,5 @@ export const UploadFile = (list: ImageList[]) => {
   })
 
   // 调用后端接口实现图片上传
+  return await uploadImage(getContext(), fileParams)
 }
