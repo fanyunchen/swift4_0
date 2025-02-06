@@ -1,6 +1,6 @@
 import { HMNavBar, HMToggleCard, HMUpload } from '../../components'
 import router from '@ohos.router'
-import { CommonRouterParams, TaskDetailInfo, TaskDetailInfoModel } from '../../models'
+import { CommonRouterParams, ImageList, TaskDetailInfo, TaskDetailInfoModel } from '../../models'
 import { getTaskDetail } from '../../api'
 import { call } from '@kit.TelephonyKit'
 import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../../constants'
@@ -178,8 +178,20 @@ struct TaskDetail {
    */
   @Builder
   getTransLineContent() {
-    HMUpload({ title: '请拍照上传回单凭证' })
-    HMUpload({ title: '请拍照上传货品凭证' })
+    HMUpload({
+      title: '请拍照上传回单凭证',
+      imgList: this.taskDetailData.cargoPickUpPictureList || [],
+      onListChange: (list: ImageList[]) => {
+        this.taskDetailData.cargoPickUpPictureList = list
+      }
+    })
+    HMUpload({
+      title: '请拍照上传货品凭证',
+      imgList: this.taskDetailData.cargoPictureList || [],
+      onListChange: (list: ImageList[]) => {
+        this.taskDetailData.cargoPictureList = list
+      }
+    })
   }
 
   /**
@@ -194,9 +206,10 @@ struct TaskDetail {
         .fontColor($r('app.color.text_primary'))
         .width(125)
       Button('提货')
-        .backgroundColor($r('app.color.primary_disabled'))
+        .backgroundColor($r('app.color.primary'))
         .fontColor($r('app.color.white'))
         .height(50)
+        .enabled(this.getPickUpState())
         .layoutWeight(1)
         .margin({ left: 20 })
     }
@@ -209,13 +222,25 @@ struct TaskDetail {
     .backgroundColor($r('app.color.white'))
   }
 
+  // 获取提货按钮可用状态
+  getPickUpState() {
+    if (this.taskDetailData.cargoPickUpPictureList.length > 0 &&
+      this.taskDetailData.cargoPictureList.length > 0 &&
+    this.taskDetailData.cargoPickUpPictureList.every(item =>!!item.url) &&
+    this.taskDetailData.cargoPictureList.every(item =>!!item.url)) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   build() {
     if (this.show) {
       Column() {
         Row().width('100%')
           .height(AppStorage.get<number>(APP_TOP_HEIGHT))
           .backgroundColor($r('app.color.white'))
-        
+
         HMNavBar({ title: "任务详情" })
 
         Scroll(this.scroller) {
