@@ -32,21 +32,45 @@ export struct HMUpload {
         .fontColor($r('app.color.text_secondary'))
         .margin({ top: 15, bottom: 15 })
 
-      if (this.imgList.length != 6) {
-        Row() {
-          Image($r('app.media.ic_add_img'))
-            .width(30)
-            .onClick(() => {
-              this.selectImage()
-            })
+      Grid() {
+        ForEach(this.imgList, (item: ImageList) => {
+          GridItem() {
+            Row() {
+              Image(item.url)
+                .width('100%')
+                .aspectRatio(1)
+                .objectFit(ImageFit.Contain)
+            }
+            .width(95)
             .aspectRatio(1)
+            .backgroundColor($r('app.color.background_page'))
+            .borderRadius(8)
+            .justifyContent(FlexAlign.Center)
+            .alignItems(VerticalAlign.Center)
+            .clip(true)
+          }
+        })
+        if (this.imgList.length != this.maxNumber) {
+          GridItem() {
+            Row() {
+              Image($r('app.media.ic_add_img'))
+                .width(30)
+                .onClick(() => {
+                  this.selectImage()
+                })
+                .aspectRatio(1)
+            }
+            .width(95)
+            .aspectRatio(1)
+            .borderRadius(8)
+            .backgroundColor($r('app.color.background_page'))
+            .justifyContent(FlexAlign.Center)
+            .alignItems(VerticalAlign.Center)
+          }
         }
-        .width(95)
-        .aspectRatio(1)
-        .backgroundColor($r('app.color.background_page'))
-        .justifyContent(FlexAlign.Center)
-        .alignItems(VerticalAlign.Center)
       }
+      .columnsGap(5)
+      .rowsGap(5)
     }.width('100%')
     .alignItems(HorizontalAlign.Start)
   }
