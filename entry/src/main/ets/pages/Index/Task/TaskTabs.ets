@@ -57,10 +57,6 @@ export struct TaskTabs {
             if (item.name === "waiting") {
               // 待提货区域
               Column() {
-                Button('详情')
-                  .onClick(() => {
-                    router.pushUrl({ url: "pages/TaskDetail/TaskDetail" })
-                  })
                 TaskList()
               }
             } else if (item.name === "line") {

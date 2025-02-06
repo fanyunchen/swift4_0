@@ -64,6 +64,9 @@ export async function requestTHttp<T>(
       // 地址错误或找不到资源地址
       promptAction.showToast({ message: '请求地址错误' })
       console.log('hmlog-->', '请求地址错误')
+      router.replaceUrl({
+        url: 'pages/Login/Login'
+      })
       return ''
     } else {
       // 请求成功
@@ -82,6 +85,9 @@ export async function requestTHttp<T>(
   } catch (err) {
     promptAction.showToast({ message: JSON.stringify(err) })
     console.error('hmlog-->', "requestTHttp Failed.Err:" + JSON.stringify(err))
+    router.replaceUrl({
+      url: 'pages/Login/Login'
+    })
     return ''
   } finally {
     // 关闭请求
