@@ -1,4 +1,4 @@
-import { TaskInfoItem, TaskInfoItemModel } from "../../../models"
+import { TaskInfoItem, TaskInfoItemModel, TaskTypeEnum } from "../../../models"
 import router from "@ohos.router"
 
 @Preview
@@ -8,10 +8,34 @@ export struct TaskItemCard {
 
   // 获取当前任务的提货状态
   getBtnEnable() {
-    if (this.taskItemData?.enablePickUp) {
+    if (this.taskItemData.enablePickUp) {
       return true
     }
-    return false
+    // 判断当前状态：在途or已交货状态
+    const value = this.taskItemData.status.toString()
+    switch (value) {
+      case TaskTypeEnum.Line.toString():
+      case TaskTypeEnum.Delivered.toString():
+        return true
+      default:
+        return false
+    }
+  }
+
+  // 获取按钮显示文本
+  getBtnText() {
+    const value = this.taskItemData.status.toString()
+    console.log('value-->', value)
+    switch (value) {
+      case TaskTypeEnum.Line.toString():
+        return "交货"
+      case TaskTypeEnum.Waiting.toString():
+        return "提货"
+      case TaskTypeEnum.Delivered.toString():
+        return "回车登记"
+      default:
+        return ''
+    }
   }
 
   // 去提货
@@ -88,7 +112,7 @@ export struct TaskItemCard {
             .margin({ top: 4 })
         }.alignItems(HorizontalAlign.Start)
 
-        Button("提货")
+        Button(this.getBtnText())
           .backgroundColor($r('app.color.primary'))
           .fontColor($r('app.color.white'))
           .fontSize(14)
