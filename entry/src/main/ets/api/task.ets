@@ -1,4 +1,4 @@
-import { PickUpParamsModel, TaskDetailInfoModel, TaskListData, TaskListParams } from "../models";
+import { DeliverParamsModel, PickUpParamsModel, TaskDetailInfoModel, TaskListData, TaskListParams } from "../models";
 import { Request } from "../utils";
 
 /**
@@ -17,4 +17,8 @@ export const getTaskDetail = (id: string) => {
 
 export const pickUp = (params: PickUpParamsModel) => {
   return Request.post<null>("/tasks/takeDelivery", params)
+}
+
+export const deliver = (params: DeliverParamsModel) => {
+  return Request.post<null>("/tasks/deliver", params)
 }

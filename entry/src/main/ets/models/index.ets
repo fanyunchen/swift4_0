@@ -12,6 +12,8 @@ export * from "./task_detail"
 
 export * from "./pick_up"
 
+export * from "./deliver"
+
 // 服务器端所有接口返回的数据类型
 export class ResponseData<T> {
   code: number = 0

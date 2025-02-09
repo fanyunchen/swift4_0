@@ -42,11 +42,6 @@ export struct TaskList {
     this.getTaskList(false)
   }
 
-  // 页面一显示就刷新数据
-  onPageShow(): void {
-    this.getTaskList(false)
-  }
-
   @Builder
   getBottomDisplay() {
     Row({ space: 20 }) {

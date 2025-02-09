@@ -24,6 +24,7 @@ export struct HMUpload {
     alignment: DialogAlignment.Center,
     autoCancel: true
   })
+  @State canUpload: boolean = true
 
   // 点击打开相册选择框
   async selectImage() {
@@ -74,12 +75,14 @@ export struct HMUpload {
                   this.preview.open()
                 })
                 .objectFit(ImageFit.Cover)
-              Image($r('app.media.ic_btn_delete'))
-                .width(25)
-                .onClick(() => {
-                  this.deleteImage(index)
-                })
-                .aspectRatio(1)
+              if (this.canUpload) {
+                Image($r('app.media.ic_btn_delete'))
+                  .width(25)
+                  .onClick(() => {
+                    this.deleteImage(index)
+                  })
+                  .aspectRatio(1)
+              }
             }.width('100%')
             .height('100%')
           }
@@ -88,7 +91,7 @@ export struct HMUpload {
           .borderRadius(8)
           .clip(true)
         })
-        if (this.imgList.length != this.maxNumber) {
+        if (this.imgList.length != this.maxNumber && this.canUpload) {
           GridItem() {
             Row() {
               Image($r('app.media.ic_add_img'))
