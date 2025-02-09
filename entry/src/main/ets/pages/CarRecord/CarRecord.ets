@@ -123,6 +123,7 @@ struct CarRecord {
             .backgroundColor($r('app.color.primary'))
             .width(200)
             .height(50)
+            .enabled(!!this.carRecord.endTime)
             .onClick(() => {
               this.btnRecord()
             })

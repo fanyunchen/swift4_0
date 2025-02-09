@@ -16,7 +16,7 @@ struct Delay {
     builder: HMDateDialog({
       oldTime: new Date(this.oldTime),
       action: (time) => {
-        this.delayForm.delayTime = dayjs(time).format("YYYY-MM-DD HH:mm:ss")
+        this.delayForm.delayTime = dayjs(time).format("YYYY-MM-DD HH:mm")
       }
     }),
     customStyle: true,
@@ -56,7 +56,9 @@ struct Delay {
       HMCard() {
         HMCardItem({ leftText: '原定时间', rightText: this.oldTime, showRightIcon: false })
         HMCardItem({
-          leftText: '延迟时间', rightText: this.delayForm.delayTime || "不可超过2个小时", click: () => {
+          leftText: '延迟时间',
+          rightText: this.delayForm.delayTime ? this.delayForm.delayTime + ":00" : "不可超过2个小时",
+          click: () => {
             this.dateDialog.open()
           }
         })

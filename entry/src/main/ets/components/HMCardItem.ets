@@ -25,6 +25,10 @@ struct HMCardItem {
           Image($r("app.media.ic_btn_more"))
             .width(24)
             .aspectRatio(1)
+        } else {
+          Text()
+            .width(24)
+            .aspectRatio(1)
         }
       }.onClick(() => {
         this.click()
