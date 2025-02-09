@@ -25,6 +25,7 @@ struct TaskDetail {
    * @param id  任务id
    */
   async getTaskDetail(id: string) {
+    this.show = false
     const result = await getTaskDetail(id)
     if (result !== '' && result !== null) {
       this.taskDetailData = result

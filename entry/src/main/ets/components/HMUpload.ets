@@ -50,8 +50,8 @@ export struct HMUpload {
   deleteImage(index: number) {
     animateTo({ duration: 300 }, () => {
       this.imgList.splice(index, 1)
-      this.onListChange(this.imgList)
     })
+    this.onListChange(this.imgList)
   }
 
   build() {

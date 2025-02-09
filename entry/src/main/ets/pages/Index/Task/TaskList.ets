@@ -42,6 +42,11 @@ export struct TaskList {
     this.getTaskList(false)
   }
 
+  // 页面一显示就刷新数据
+  onPageShow(): void {
+    this.getTaskList(false)
+  }
+
   @Builder
   getBottomDisplay() {
     Row({ space: 20 }) {
@@ -101,61 +106,64 @@ export struct TaskList {
   }
 
   build() {
-    Refresh({ refreshing: $$this.refreshing, builder: this.getRefreshDisplay }) {
-      if (this.show) {
-        List() {
-          ForEach(this.taskListData, (item: TaskInfoItemModel) => {
+    Column() {
+      Refresh({ refreshing: $$this.refreshing, builder: this.getRefreshDisplay }) {
+        if (this.show) {
+          List() {
+            ForEach(this.taskListData, (item: TaskInfoItemModel) => {
+              ListItem() {
+                TaskItemCard({ taskItemData: item })
+              }
+            })
+
             ListItem() {
-              TaskItemCard({ taskItemData: item })
+              //列表底部显示加载的状态
+              this.getBottomDisplay()
+            }
+          }
+          //当List到底部的时候执行该数据，可以实现列表的上拉加载，其实就是获取下一页的数据
+          .onReachEnd(async () => {
+            //promptAction.showToast({ message: "我已经到底了，可以加载新数据了！" })
+            if (this.allPage >= this.queryParams.page) { //查询的页码还没有超过总页
+              if (!this.loading) {
+                this.loading = true //当前加载
+                await this.getTaskList(true)
+                this.loading = this.allPage < this.queryParams.page ? true : false //当前完成了加载
+              }
             }
           })
-
-          ListItem() {
-            //列表底部显示加载的状态
-            this.getBottomDisplay()
-          }
+        } else {
+          Column() {
+            Text("...暂无数据,请刷新重试...")
+              .fontSize(25)
+              .fontWeight(FontWeight.Bold)
+          }.width('100%')
+          .height('100%')
+          .justifyContent(FlexAlign.Center)
+          .alignItems(HorizontalAlign.Center)
         }
-        //当List到底部的时候执行该数据，可以实现列表的上拉加载，其实就是获取下一页的数据
-        .onReachEnd(async () => {
-          //promptAction.showToast({ message: "我已经到底了，可以加载新数据了！" })
-          if (this.allPage >= this.queryParams.page) { //查询的页码还没有超过总页
-            if (!this.loading) {
-              this.loading = true //当前加载
-              await this.getTaskList(true)
-              this.loading = this.allPage < this.queryParams.page ? true : false //当前完成了加载
-            }
-          }
-        })
-      } else {
-        Column() {
-          Text("...暂无提货数据...")
-            .fontSize(30)
-            .fontWeight(FontWeight.Bold)
-        }.width('100%')
-        .height('100%')
-        .justifyContent(FlexAlign.Center)
-        .alignItems(HorizontalAlign.Center)
+
       }
+      .onStateChange((status: RefreshStatus) => {
+        this.refreshStatus = status //记录刷新状态
+        if (status === RefreshStatus.Drag) {
+          this.str = "往下拉"
+        } else if (status === RefreshStatus.OverDrag) {
+          this.str = "超过了刷新的距离"
+        } else if (status === RefreshStatus.Refresh) {
+          this.str = "松手刷新中"
+          // setTimeout(() => {
+          //   this.refreshing = false
+          // }, 2000)
 
-    }
-    .onStateChange((status: RefreshStatus) => {
-      this.refreshStatus = status //记录刷新状态
-      if (status === RefreshStatus.Drag) {
-        this.str = "往下拉"
-      } else if (status === RefreshStatus.OverDrag) {
-        this.str = "超过了刷新的距离"
-      } else if (status === RefreshStatus.Refresh) {
-        this.str = "松手刷新中"
-        // setTimeout(() => {
-        //   this.refreshing = false
-        // }, 2000)
+          //重新获取第一页的数据
+          this.onRefresh()
 
-        //重新获取第一页的数据
-        this.onRefresh()
-
-      } else if (status === RefreshStatus.Done) {
-        this.str = "刷新结束了！"
-      }
-    })
+        } else if (status === RefreshStatus.Done) {
+          this.str = "刷新结束了！"
+        }
+      })
+    }.width('100%')
+    .height('100%')
   }
 }

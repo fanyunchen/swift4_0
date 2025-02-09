@@ -1,4 +1,4 @@
-import { TabClass } from "../../../models"
+import { TabClass, TaskListParams, TaskListParamsModel, TaskTypeEnum } from "../../../models"
 import { TaskList } from "./TaskList"
 import router from "@ohos.router"
 import { APP_TOP_HEIGHT } from "../../../constants"
@@ -56,11 +56,16 @@ export struct TaskTabs {
           TabContent() {
             if (item.name === "waiting") {
               // 待提货区域
-              Column() {
-                TaskList()
-              }
+              TaskList()
             } else if (item.name === "line") {
               // 在途区域
+              TaskList({
+                queryParams: new TaskListParamsModel({
+                  status: TaskTypeEnum.Line,
+                  page: 1,
+                  pageSize: 5
+                } as TaskListParams)
+              })
             } else {
               // 已完成区域
             }
