@@ -1,5 +1,6 @@
 import {
   CarRecordParamsModel,
+  DelayParamsModel,
   DeliverParamsModel,
   PickUpParamsModel,
   TaskDetailInfoModel,
@@ -42,4 +43,11 @@ export const deliver = (params: DeliverParamsModel) => {
  */
 export const carRecord = (params: CarRecordParamsModel) => {
   return Request.post<null>("/tasks/truckRegistration", params)
+}
+
+/**
+ * 延迟提货接口
+ */
+export const delay = (params: DelayParamsModel) => {
+  return Request.post<null>("/tasks/delay", params)
 }

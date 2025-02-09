@@ -16,6 +16,8 @@ export * from "./deliver"
 
 export * from "./car_record"
 
+export * from './delay'
+
 // 服务器端所有接口返回的数据类型
 export class ResponseData<T> {
   code: number = 0

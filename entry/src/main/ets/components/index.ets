@@ -17,3 +17,5 @@ export * from "./HMUpload"
 export * from "./HMPreview"
 
 export * from "./HMCheckBox"
+
+export * from './HMDateDialog'

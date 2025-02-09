@@ -247,6 +247,15 @@ struct TaskDetail {
           .height(50)
           .fontColor($r('app.color.text_primary'))
           .width(125)
+          .onClick(() => {
+            router.pushUrl({
+              url: 'pages/Delay/Delay',
+              params: {
+                id: this.taskDetailData.id,
+                oldTime: this.taskDetailData.planDepartureTime
+              }
+            })
+          })
         Button('提货')
           .backgroundColor($r('app.color.primary'))
           .fontColor($r('app.color.white'))
