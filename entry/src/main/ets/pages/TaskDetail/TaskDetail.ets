@@ -1,16 +1,22 @@
-import { HMNavBar, HMToggleCard, HMUpload, UploadFile } from '../../components'
+import { HMLoading, HMNavBar, HMToggleCard, HMUpload, UploadFile } from '../../components'
 import router from '@ohos.router'
-import { CommonRouterParams, ImageList, TaskDetailInfo, TaskDetailInfoModel } from '../../models'
-import { getTaskDetail } from '../../api'
+import { CommonRouterParams, ImageList, PickUpParamsModel, TaskDetailInfo, TaskDetailInfoModel } from '../../models'
+import { getTaskDetail, pickUp } from '../../api'
 import { call } from '@kit.TelephonyKit'
 import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../../constants'
+import promptAction from '@ohos.promptAction'
 
 // 任务详情页
 @Entry
 @Component
 struct TaskDetail {
   scroller: Scroller = new Scroller()
-  jobId: string = '4072311102831552386'
+  jobId: string = '' //'4072311102831552386'
+  layer: CustomDialogController = new CustomDialogController({
+    builder: HMLoading({ loadingText: "数据处理中，请耐心等待！" }),
+    customStyle: true,
+    alignment: DialogAlignment.Center
+  })
   @State taskDetailData: TaskDetailInfoModel = new TaskDetailInfoModel({} as TaskDetailInfo)
   @State show: boolean = false
 
@@ -227,26 +233,46 @@ struct TaskDetail {
 
   // 获取提货按钮可用状态
   getPickUpState() {
-    if (this.taskDetailData.cargoPickUpPictureList.length > 0 &&
-      this.taskDetailData.cargoPictureList.length > 0 &&
-    this.taskDetailData.cargoPickUpPictureList.every(item =>!!item.url) &&
-    this.taskDetailData.cargoPictureList.every(item =>!!item.url)) {
+    if (this.taskDetailData.cargoPickUpPictureList?.length > 0
+      && this.taskDetailData.cargoPictureList?.length > 0
+      && this.taskDetailData.cargoPickUpPictureList.every(item =>!!item.url)
+      && this.taskDetailData.cargoPictureList.every(item =>!!item.url)) {
       return true
-    } else {
-      return false
     }
+    return false
   }
 
   // 实现提货功能
   async btnPickUp() {
-    // 1.图片上传：将本地相册中的图片地址，上传到服务器获取到永久的图片地址
-    const cargoPickUpPictureList =
-      await UploadFile(this.taskDetailData.cargoPickUpPictureList) // 提货凭证照片，获取永久地址
-    const cargoPictureList = await UploadFile(this.taskDetailData.cargoPictureList) // 提货照片获取永久地址
-    // 2.实现提货功能
+    try {
+      this.layer.open()
+      // 1.图片上传：将本地相册中的图片地址，上传到服务器获取到永久的图片地址
+      const cargoPickUpPictureList =
+        await UploadFile(this.taskDetailData.cargoPickUpPictureList) // 提货凭证照片，获取永久地址
+      const cargoPictureList = await UploadFile(this.taskDetailData.cargoPictureList) // 提货照片获取永久地址
 
-    console.log('hmlog-->', JSON.stringify(cargoPickUpPictureList))
-    console.log('hmlog-->', JSON.stringify(cargoPictureList))
+      console.log('hmlog-->', JSON.stringify(cargoPickUpPictureList))
+      console.log('hmlog-->', JSON.stringify(cargoPictureList))
+
+      // 2.实现提货功能
+      pickUp(new PickUpParamsModel({
+        id: this.taskDetailData.id,
+        cargoPickUpPictureList: cargoPickUpPictureList,
+        cargoPictureList: cargoPictureList
+      }))
+
+      // 重新加载数据
+      this.getTaskDetail(this.taskDetailData.id)
+
+      this.scroller.scrollEdge(Edge.Top)
+
+      promptAction.showToast({ message: '提货成功！', duration: 2000 })
+    } catch (err) {
+      AlertDialog.show({ message: '提货失败！' + JSON.stringify(err.message) })
+    } finally {
+      this.layer.close()
+    }
+
   }
 
   build() {

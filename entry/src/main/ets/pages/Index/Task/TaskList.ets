@@ -38,9 +38,10 @@ export struct TaskList {
 
   //为什么List加了onReachEnd之后，需要屏蔽该方法呢？
   //因为，List列表刚开始加载时是空的，也会触发onReachEnd事件，那么第一页的数据就会被查询2次，多余了
-  // aboutToAppear(): void {
-  //   this.getTaskList()
-  // }
+  aboutToAppear(): void {
+    this.getTaskList(false)
+  }
+
   @Builder
   getBottomDisplay() {
     Row({ space: 20 }) {
@@ -127,10 +128,6 @@ export struct TaskList {
         })
       } else {
         Column() {
-          Button('详情')
-            .onClick(() => {
-              router.pushUrl({ url: 'pages/TaskDetail/TaskDetail' })
-            })
           Text("...暂无提货数据...")
             .fontSize(30)
             .fontWeight(FontWeight.Bold)
