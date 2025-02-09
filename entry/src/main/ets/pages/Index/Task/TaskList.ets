@@ -50,7 +50,7 @@ export struct TaskList {
           .fontSize(14)
           .fontColor($r("app.color.text_secondary"))
         if (this.allPage >= this.queryParams.page) {
-          HMLoading({ hWidth: 20 })
+          HMLoading({ hWidth: 20, show: false })
         }
       }
     }

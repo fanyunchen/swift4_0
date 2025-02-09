@@ -1,6 +1,7 @@
 @Component
 struct HMCardItem {
   leftText: string = '' // 左边显示的内容
+  @Prop
   rightText: string = '' // 右边显示的内容
   showRightIcon: boolean = true // 是否显示右边的图片
   showBorder: boolean = true // 是否显示底部分割线

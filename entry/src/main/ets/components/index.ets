@@ -15,3 +15,5 @@ export * from "./HMToggleCard"
 export * from "./HMUpload"
 
 export * from "./HMPreview"
+
+export * from "./HMCheckBox"
