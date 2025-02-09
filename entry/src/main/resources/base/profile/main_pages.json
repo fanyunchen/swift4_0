@@ -6,6 +6,7 @@
     "pages/Setting/Setting",
     "pages/TaskDetail/TaskDetail",
     "pages/CarRecord/CarRecord",
-    "pages/Delay/Delay"
+    "pages/Delay/Delay",
+    "pages/ExceptionReport/ExceptionReport"
   ]
 }

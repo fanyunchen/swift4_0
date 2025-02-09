@@ -272,6 +272,11 @@ struct TaskDetail {
           .height(50)
           .fontColor($r('app.color.text_primary'))
           .width(125)
+          .onClick(() => {
+            router.pushUrl({
+              url: 'pages/ExceptionReport/ExceptionReport'
+            })
+          })
         Button('交货')
           .backgroundColor($r('app.color.primary'))
           .fontColor($r('app.color.white'))
