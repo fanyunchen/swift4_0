@@ -1,20 +1,28 @@
 import { HMCard, HMCardItem, HMNavBar } from '../../components';
 import { APP_TOP_HEIGHT } from '../../constants';
-import { geoLocationManager } from '@kit.LocationKit';
 import { Permissions } from '@kit.AbilityKit';
 import promptAction from '@ohos.promptAction';
 import { permissionManager, WebSdkClass } from '../../utils';
 import { webview } from '@kit.ArkWeb';
+import { AddressItem } from '../../models';
 
 @Entry
 @Component
 struct SelectLocation {
   permission: Permissions[] = ["ohos.permission.LOCATION", "ohos.permission.APPROXIMATELY_LOCATION"]
   webSdk: WebSdkClass = new WebSdkClass()
+  @State list: AddressItem[] = []
 
   aboutToAppear(): void {
     this.checkPermission()
     WebSdkClass.webController = new webview.WebviewController()
+    WebSdkClass.Context = getContext(this)
+
+    WebSdkClass.Context.eventHub.on("search_list", (json: string) => {
+      console.log("hmlog-->", "json:" + json)
+      this.list = JSON.parse(json) as AddressItem[]
+      console.log('hmlog-->', 'list:' + this.list)
+    })
   }
 
   // /**
@@ -119,15 +127,14 @@ struct SelectLocation {
         .javaScriptProxy({
           name: 'swift',
           object: this.webSdk,
-          methodList: ['alert', "setCurrentLocation"],
+          methodList: ['alert', "setCurrentLocation", "receiveData"],
           controller: WebSdkClass.webController
         })
       Column() {
         HMCard() {
-          HMCardItem({ leftText: "上海滩", rightText: '100m以内' })
-          HMCardItem({ leftText: "金色大厅", rightText: '100m以内' })
-          HMCardItem({ leftText: "维也纳", rightText: '100m以内' })
-          HMCardItem({ leftText: "中山公园", rightText: '100m以内' })
+          ForEach(this.list, (item: AddressItem) => {
+            HMCardItem({ leftText: item.name, rightText: item.distance + 'm以内' })
+          })
         }
       }
       .position({ y: '100%' })

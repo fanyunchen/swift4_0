@@ -3,6 +3,7 @@ import { geoLocationManager } from '@kit.LocationKit'
 
 export class WebSdkClass {
   static webController: webview.WebviewController | null = null
+  static Context: Context | null = null
 
   /**
    * 提供业务方法给页面端使用
@@ -23,5 +24,15 @@ export class WebSdkClass {
     } catch (err) {
       AlertDialog.show({ message: '获取经纬度失败:' + JSON.stringify(err) })
     }
+  }
+
+  /**
+   * 获取网页端获取到的数据
+   * @param json 网页端获取到的数据
+   */
+  receiveData(json: string) {
+    // AlertDialog.show({ message: '鸿蒙端显示' + json })
+    console.log('hmlog-->', 'sdk json' + json)
+    WebSdkClass.Context?.eventHub.emit("search_list", json)
   }
 }

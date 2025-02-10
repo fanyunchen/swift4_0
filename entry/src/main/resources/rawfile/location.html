@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
     <meta charset="utf-8">
     <title>地图导航</title>
     <style>
@@ -8,10 +9,10 @@
             margin:0;
             padding:0;
         }
-        #container{
-            width:100%;
-            height:100vh;
-            background-color: pink;
+        #container {
+          width: 100%;
+          height: 100vh;
+          background-color: pink;
         }
     </style>
 </head>
@@ -53,5 +54,21 @@
 		  offset: new AMap.Pixel(-13, -30), //相对于基点的偏移位置
 		});
 		map.add(marker);
+		
+		//搜索最近的几个地点
+		map.plugin(['AMap.PlaceSearch'], function() {
+		    var PlaceSearchOptions = { //设置PlaceSearch属性
+		        pageSize: 4, //每页结果数,默认10
+		        pageIndex: 1, //请求页码，默认1
+		        map: map,
+		        extensions: "base" //返回信息详略，默认为base（基本信息）
+		    };
+		    var MSearch = new AMap.PlaceSearch(PlaceSearchOptions); //构造PlaceSearch类
+		    AMap.Event.addListener(MSearch, "complete", (result)=>{
+		        window.swift.receiveData(JSON.stringify(result.poiList?.pois||[]))
+				// window.swift.alert(JSON.stringify(result.poiList,null,2))
+		    }); //返回结果
+		    MSearch.searchNearBy('街道', new AMap.LngLat(lon,lat)); //关键字查询
+		});
     }
 </script>

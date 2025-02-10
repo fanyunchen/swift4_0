@@ -13,6 +13,9 @@ struct HMCardItem {
       Text(this.leftText)
         .fontWeight(400)
         .fontColor($r("app.color.text_primary"))
+        .textOverflow({ overflow: TextOverflow.Ellipsis })
+        .maxLines(1)
+        .layoutWeight(1)
 
       Row() {
         if (this.rightText) {
