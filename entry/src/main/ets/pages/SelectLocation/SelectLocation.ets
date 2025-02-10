@@ -1,12 +1,13 @@
 import { HMCard, HMCardItem, HMNavBar } from '../../components';
 import { APP_TOP_HEIGHT } from '../../constants';
 import { geoLocationManager } from '@kit.LocationKit';
+import { abilityAccessCtrl, bundleManager, common } from '@kit.AbilityKit';
 
 @Entry
 @Component
 struct SelectLocation {
   aboutToAppear(): void {
-    this.getLocation()
+    this.checkPermission()
   }
 
   /**
@@ -18,6 +19,43 @@ struct SelectLocation {
       AlertDialog.show({ message: JSON.stringify(location) })
     } catch (err) {
       AlertDialog.show({ message: JSON.stringify(err) })
+    }
+  }
+
+  /**
+   * 检查用户权限
+   */
+  async checkPermission() {
+    // 没有权限，需要去向用户申请权限，有的话直接获取位置
+    // 1.获取用户权限，看用户授权过什么权限
+    const manager = abilityAccessCtrl.createAtManager()
+    // 获取应用信息
+    const appInfo =
+      bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION)
+    // 2.判断是否拥有
+    const status = manager.checkAccessTokenSync(appInfo.appInfo.accessTokenId, "ohos.permission.LOCATION")
+    if (status === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+      // 未授权：需要拉取授权窗口、提示用户授权
+      const result = await manager.requestPermissionsFromUser(getContext(),
+        ["ohos.permission.LOCATION", "ohos.permission.APPROXIMATELY_LOCATION"])
+      if (result.authResults[0] !== 0) {
+        // 用户不同意：跳转到一个能设置权限的应用中
+        const context = getContext() as common.UIAbilityContext
+        context.startAbility({
+          bundleName: "com.huawei.hmos.settings", //设置的包名
+          abilityName: "com.huawei.hmos.settings.MainAbility",
+          uri: "application_info_entry", //参数名
+          parameters: {
+            pushParams: appInfo.name
+          }
+        })
+      } else {
+        // 用户同意
+        this.getLocation()
+      }
+    } else {
+      // 已授权
+      this.getLocation()
     }
   }
 
