@@ -1,7 +1,7 @@
 import { HMCard, HMCardItem, HMNavBar, HMSelectCard, HMUpload } from '../../components';
 import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../../constants';
 import { CommonRouterParams, ExceptionParams, ExceptionParamsModel, exceptionType } from '../../models';
-import { router } from '@kit.ArkUI';
+import { promptAction, router } from '@kit.ArkUI';
 import dayjs from '@hview/dayjs';
 
 @Entry
@@ -75,6 +75,21 @@ struct ExceptionReport {
     }
   }
 
+  /**
+   * 实现异常上报
+   */
+  btnReport() {
+    AlertDialog.show({ message: JSON.stringify(this.exceptionForm.exceptionDescribe) })
+    if (this.exceptionForm.exceptionType === '其他问题' && this.exceptionForm.exceptionDescribe === null) {
+      promptAction.showToast({ message: '选择其他问题时，异常描述为必填项' })
+      return
+    }
+    if (this.exceptionForm.exceptionType === '其他问题' && this.exceptionForm.exceptionDescribe === '') {
+      promptAction.showToast({ message: '选择其他问题时，异常描述为必填项' })
+      return
+    }
+  }
+
   build() {
     Column() {
       Row().width('100%')
@@ -102,6 +117,9 @@ struct ExceptionReport {
             })
             HMCardItem({
               leftText: '上报位置', rightText: "请选择", click: () => {
+                router.pushUrl({
+                  url: 'pages/SelectLocation/SelectLocation'
+                })
               }
             })
             HMCardItem({
@@ -116,7 +134,7 @@ struct ExceptionReport {
               showBorder: false
             })
 
-            TextArea({ placeholder: '请输入异常描述(选择其他时为必填项)' })
+            TextArea({ placeholder: '请输入异常描述(选择其他时为必填项)', text: this.exceptionForm.exceptionDescribe })
               .backgroundColor($r('app.color.background_page'))
               .height(130)
               .fontSize(14)
@@ -126,7 +144,7 @@ struct ExceptionReport {
               .onChange((value) => {
                 this.exceptionForm.exceptionDescribe = value
               })
-            Text(`0/${this.maxSizeNumber}`)
+            Text(`${this.exceptionForm.exceptionDescribe?.length || "0"}/${this.maxSizeNumber}`)
               .textAlign(TextAlign.End)
               .width('100%')
               .margin({ top: -30 })
@@ -138,7 +156,11 @@ struct ExceptionReport {
           HMCard() {
             HMUpload({
               title: '上传图片(最多六张)',
-              maxNumber: 6
+              maxNumber: 6,
+              imgList: this.exceptionForm.exceptionImagesList || [],
+              onListChange: (imgList) => {
+                this.exceptionForm.exceptionImagesList = imgList
+              }
             })
             Row()
               .height(30)
@@ -153,8 +175,9 @@ struct ExceptionReport {
           .height(50)
           .width(200)
           .backgroundColor($r('app.color.primary'))
-          .enabled(false)
+          .enabled(true)
           .onClick(() => {
+            this.btnReport()
           })
       }
       .padding({ left: 15, right: 15 })
