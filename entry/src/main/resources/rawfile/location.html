@@ -35,4 +35,23 @@
       zoom: 12, // 地图缩放级别
       center:[116,40] // 中心点坐标
     });
+    // 窗体加载完成后执行的方法
+    window.onload=function(){
+		// 调用鸿蒙端方法，获取经纬度
+		window.swift.setCurrentLocation()
+	}
+    function setLocation(lon,lat){
+        window.swift.alert('设置地图经纬度:'+ lon + "," + lat)
+		// 地图定位到查询到的经纬度
+		map.setZoomAndCenter(18,[lon,lat])
+		
+		//设置当前位置
+		const content = `<div class="custom-content-marker"><img src="https://a.amap.com/jsapi_demos/static/demo-center/icons/dir-via-marker.png"></div>`;
+		const marker = new AMap.Marker({
+		  content: content, //自定义点标记覆盖物内容
+		  position: [lon, lat], //基点位置
+		  offset: new AMap.Pixel(-13, -30), //相对于基点的偏移位置
+		});
+		map.add(marker);
+    }
 </script>

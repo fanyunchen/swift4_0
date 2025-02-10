@@ -17,21 +17,21 @@ struct SelectLocation {
     WebSdkClass.webController = new webview.WebviewController()
   }
 
-  /**
-   * 获取当前位置
-   */
-  async getLocation() {
-    try {
-      let location = await geoLocationManager.getCurrentLocation()
-      // AlertDialog.show({ message: JSON.stringify(location) })
-    } catch (err) {
-      // AlertDialog.show({ message: JSON.stringify(err) })
-      if (err.code === 3301100) {
-        // promptAction.showToast({ message: '请先打开位置' })
-        AlertDialog.show({ message: "请先打开位置" })
-      }
-    }
-  }
+  // /**
+  //  * 获取当前位置
+  //  */
+  // async getLocation() {
+  //   try {
+  //     let location = await geoLocationManager.getCurrentLocation()
+  //     // AlertDialog.show({ message: JSON.stringify(location) })
+  //   } catch (err) {
+  //     // AlertDialog.show({ message: JSON.stringify(err) })
+  //     if (err.code === 3301100) {
+  //       // promptAction.showToast({ message: '请先打开位置' })
+  //       AlertDialog.show({ message: "请先打开位置" })
+  //     }
+  //   }
+  // }
 
   // /**
   //  * 检查用户权限
@@ -79,7 +79,7 @@ struct SelectLocation {
       const bol = permissionManager.checkPermission(this.permission)
       if (bol) {
         // 都授权
-        this.getLocation()
+        // this.getLocation()
       } else {
         // 未授权
         await permissionManager.requestPermission(this.permission)
@@ -119,7 +119,7 @@ struct SelectLocation {
         .javaScriptProxy({
           name: 'swift',
           object: this.webSdk,
-          methodList: ['alert'],
+          methodList: ['alert', "setCurrentLocation"],
           controller: WebSdkClass.webController
         })
       Column() {
