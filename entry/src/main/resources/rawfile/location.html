@@ -17,12 +17,22 @@
 </head>
 <body>
 <div id="container"></div>
-<input type="text" placeholder="请输入详细地址"/>
-
-<script>
-    window.onload=function(){
-        window.swift.alert("测试消息")
-    }
-</script>
 </body>
 </html>
+
+<script type="text/javascript">
+    window._AMapSecurityConfig = {
+      securityJsCode: "5a8c445a6a175367ee0650b73e84433e",
+    };
+</script>
+<script
+        type="text/javascript"
+        src="https://webapi.amap.com/maps?v=2.0&key=fb1a7e4b39f8bcdef8b0c6a63574e957"
+></script>
+<script type="text/javascript">
+    //地图初始化应该在地图容器 <div> 已经添加到 DOM 树之后
+    var map = new AMap.Map("container", {
+      zoom: 12, // 地图缩放级别
+      center:[116,40] // 中心点坐标
+    });
+</script>
