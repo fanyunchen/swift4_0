@@ -6,7 +6,7 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "@ohos/axios": "^2.2.4"
+    "@ohos/axios": "^2.2.4",
+    "libentry.so": "file:./src/main/cpp/types/libentry"
   }
 }
-

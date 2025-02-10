@@ -1,17 +1,20 @@
 import { HMCard, HMCardItem, HMNavBar } from '../../components';
 import { APP_TOP_HEIGHT } from '../../constants';
 import { geoLocationManager } from '@kit.LocationKit';
-import { abilityAccessCtrl, bundleManager, common, Permissions } from '@kit.AbilityKit';
-import { permissionManager } from '../../utils/permission_manager';
+import { Permissions } from '@kit.AbilityKit';
 import promptAction from '@ohos.promptAction';
+import { permissionManager, WebSdkClass } from '../../utils';
+import { webview } from '@kit.ArkWeb';
 
 @Entry
 @Component
 struct SelectLocation {
   permission: Permissions[] = ["ohos.permission.LOCATION", "ohos.permission.APPROXIMATELY_LOCATION"]
+  webSdk: WebSdkClass = new WebSdkClass()
 
   aboutToAppear(): void {
     this.checkPermission()
+    WebSdkClass.webController = new webview.WebviewController()
   }
 
   /**
@@ -20,9 +23,13 @@ struct SelectLocation {
   async getLocation() {
     try {
       let location = await geoLocationManager.getCurrentLocation()
-      AlertDialog.show({ message: JSON.stringify(location) })
+      // AlertDialog.show({ message: JSON.stringify(location) })
     } catch (err) {
-      AlertDialog.show({ message: JSON.stringify(err) })
+      // AlertDialog.show({ message: JSON.stringify(err) })
+      if (err.code === 3301100) {
+        // promptAction.showToast({ message: '请先打开位置' })
+        AlertDialog.show({ message: "请先打开位置" })
+      }
     }
   }
 
@@ -103,7 +110,18 @@ struct SelectLocation {
         .height(AppStorage.get(APP_TOP_HEIGHT))
         .backgroundColor($r('app.color.white'))
       HMNavBar({ title: "当前位置" })
-      Text('地图')
+      Web({
+        src: $rawfile("location.html"),
+        controller: WebSdkClass.webController
+      })
+        .width("100%")
+        .layoutWeight(1)
+        .javaScriptProxy({
+          name: 'swift',
+          object: this.webSdk,
+          methodList: ['alert'],
+          controller: WebSdkClass.webController
+        })
       Column() {
         HMCard() {
           HMCardItem({ leftText: "上海滩", rightText: '100m以内' })

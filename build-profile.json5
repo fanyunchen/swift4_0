@@ -1,6 +1,20 @@
 {
   "app": {
-    "signingConfigs": [],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\Dell.000\\.ohos\\config\\default_swifi_4_0_tHV6_4iQ7zw5fWO335KbFOM5pS9I5oeRyJKTu6L45tg=.cer",
+          "storePassword": "0000001A45744AE717D634BBA911C8836578D4DBA090EB76D29E3AAAE52F43E97F94D15497827404F29D",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001A096E09FB378343A87B4ECF582629BDFA06587A6E29B30E16EDA488F36C936FB9E4F318551BD4",
+          "profile": "C:\\Users\\Dell.000\\.ohos\\config\\default_swifi_4_0_tHV6_4iQ7zw5fWO335KbFOM5pS9I5oeRyJKTu6L45tg=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\Dell.000\\.ohos\\config\\default_swifi_4_0_tHV6_4iQ7zw5fWO335KbFOM5pS9I5oeRyJKTu6L45tg=.p12"
+        }
+      }
+    ],
     "products": [
       {
         "name": "default",
