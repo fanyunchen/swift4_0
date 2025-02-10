@@ -274,7 +274,10 @@ struct TaskDetail {
           .width(125)
           .onClick(() => {
             router.pushUrl({
-              url: 'pages/ExceptionReport/ExceptionReport'
+              url: 'pages/ExceptionReport/ExceptionReport',
+              params: {
+                id: this.taskDetailData.id
+              }
             })
           })
         Button('交货')

@@ -19,3 +19,5 @@ export * from "./HMPreview"
 export * from "./HMCheckBox"
 
 export * from './HMDateDialog'
+
+export * from "./HMSelectCard"
