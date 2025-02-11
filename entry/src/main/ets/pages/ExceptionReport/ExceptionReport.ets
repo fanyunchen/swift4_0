@@ -1,8 +1,9 @@
-import { HMCard, HMCardItem, HMNavBar, HMSelectCard, HMUpload } from '../../components';
+import { HMCard, HMCardItem, HMLoading, HMNavBar, HMSelectCard, HMUpload, UploadFile } from '../../components';
 import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../../constants';
 import { CommonRouterParams, ExceptionParams, ExceptionParamsModel, exceptionType } from '../../models';
 import { promptAction, router } from '@kit.ArkUI';
 import dayjs from '@hview/dayjs';
+import { exceptionReport } from '../../api';
 
 @Entry
 @Component
@@ -32,6 +33,11 @@ struct ExceptionReport {
     autoCancel: false,
     customStyle: true,
     alignment: DialogAlignment.Bottom
+  })
+  layer: CustomDialogController = new CustomDialogController({
+    builder: HMLoading({ loadingText: "异常上报中，请耐心等待！" }),
+    customStyle: true,
+    alignment: DialogAlignment.Center
   })
 
   @Builder
@@ -68,25 +74,56 @@ struct ExceptionReport {
     })
   }
 
-  aboutToAppear(): void {
+  // aboutToAppear(): void {
+  //   const params = router.getParams() as CommonRouterParams
+  //   if (params && params.id) {
+  //     this.exceptionForm.transportTaskId = params.id
+  //   }
+  // }
+
+  onPageShow(): void {
     const params = router.getParams() as CommonRouterParams
     if (params && params.id) {
       this.exceptionForm.transportTaskId = params.id
     }
+    if (params && params.address) {
+      console.log('hmlog-->', "exceptionPlace:" + params.address)
+      this.exceptionForm.exceptionPlace = params.address
+    }
+  }
+
+  getBtnEnable() {
+    return !!(this.exceptionForm.exceptionTime && this.exceptionForm.transportTaskId &&
+    this.exceptionForm.exceptionPlace && this.exceptionForm.exceptionType)
   }
 
   /**
    * 实现异常上报
    */
-  btnReport() {
-    AlertDialog.show({ message: JSON.stringify(this.exceptionForm.exceptionDescribe) })
-    if (this.exceptionForm.exceptionType === '其他问题' && this.exceptionForm.exceptionDescribe === null) {
-      promptAction.showToast({ message: '选择其他问题时，异常描述为必填项' })
-      return
-    }
-    if (this.exceptionForm.exceptionType === '其他问题' && this.exceptionForm.exceptionDescribe === '') {
-      promptAction.showToast({ message: '选择其他问题时，异常描述为必填项' })
-      return
+  async btnReport() {
+    try {
+      this.layer.open()
+      if (this.exceptionForm.exceptionType === '其他问题' && this.exceptionForm.exceptionDescribe === undefined) {
+        promptAction.showToast({ message: '选择其他问题时，异常描述为必填项' })
+        return
+      }
+      if (this.exceptionForm.exceptionType === '其他问题' && this.exceptionForm.exceptionDescribe === '') {
+        promptAction.showToast({ message: '选择其他问题时，异常描述为必填项' })
+        return
+      }
+      // 图片上传
+      if (this.exceptionForm.exceptionImagesList?.length) {
+        this.exceptionForm.exceptionImagesList = await UploadFile(this.exceptionForm.exceptionImagesList)
+      }
+      // 调用后端接口，上报异常
+      await exceptionReport(this.exceptionForm)
+      promptAction.showToast({ message: '异常上报成功', duration: 2000 })
+      // 返回交货页面
+      router.back()
+    } catch (err) {
+      AlertDialog.show({ message: '上报异常错误！' + JSON.stringify(err.message) })
+    } finally {
+      this.layer.close()
     }
   }
 
@@ -116,7 +153,7 @@ struct ExceptionReport {
               }
             })
             HMCardItem({
-              leftText: '上报位置', rightText: "请选择", click: () => {
+              leftText: '上报位置', rightText: this.exceptionForm.exceptionPlace || "请选择", click: () => {
                 router.pushUrl({
                   url: 'pages/SelectLocation/SelectLocation'
                 })
@@ -175,7 +212,7 @@ struct ExceptionReport {
           .height(50)
           .width(200)
           .backgroundColor($r('app.color.primary'))
-          .enabled(true)
+          .enabled(this.getBtnEnable())
           .onClick(() => {
             this.btnReport()
           })

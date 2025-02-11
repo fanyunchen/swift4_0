@@ -19,11 +19,19 @@ export struct HMDateDialog {
     this.getMin()
     if (this.oldTime.getMinutes() === 0) {
       for (let i = 0; i < 2; i++) {
-        this.hours.push((this.oldTime.getHours() + i).toString())
+        let time = this.oldTime.getHours() + i
+        if (time >= 24) {
+          time = time - 24
+        }
+        this.hours.push(time.toString().padStart(2, '0'))
       }
     } else {
       for (let i = 0; i <= 2; i++) {
-        this.hours.push((this.oldTime.getHours() + i).toString())
+        let time = this.oldTime.getHours() + i
+        if (time >= 24) {
+          time = time - 24
+        }
+        this.hours.push(time.toString().padStart(2, '0'))
       }
     }
     this.selectedHour = this.oldTime.getHours().toString()
@@ -54,7 +62,9 @@ export struct HMDateDialog {
           .onClick(() => {
             this.controller.close()
             const time =
-              new Date(this.oldTime.getFullYear() + '-' + (this.oldTime.getMonth() + 1) + '-' + this.oldTime.getDate() +
+              new Date(this.oldTime.getFullYear() + '-' + (this.oldTime.getMonth() + 1) + '-' +
+                (Number(this.selectedHour) <
+                this.oldTime.getHours() ? this.oldTime.getDate() + 1 : this.oldTime.getDate()) +
                 " " + this.selectedHour + ":" + this.selectedMin)
             let timeDiff = Number(time.getTime()) - Number(this.oldTime.getTime())
             if (timeDiff > 7200000) {

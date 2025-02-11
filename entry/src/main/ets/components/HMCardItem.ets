@@ -9,7 +9,7 @@ struct HMCardItem {
   } // 点击事件
 
   build() {
-    Row() {
+    Row({ space: 20 }) {
       Text(this.leftText)
         .fontWeight(400)
         .fontColor($r("app.color.text_primary"))
@@ -23,6 +23,7 @@ struct HMCardItem {
             .fontSize(14)
             .fontWeight(400)
             .fontColor($r("app.color.text_primary"))
+            .constraintSize({ maxWidth: '60%' }) // 最大宽度
         }
         if (this.showRightIcon) {
           Image($r("app.media.ic_btn_more"))

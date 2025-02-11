@@ -2,6 +2,7 @@ import {
   CarRecordParamsModel,
   DelayParamsModel,
   DeliverParamsModel,
+  ExceptionParamsModel,
   PickUpParamsModel,
   TaskDetailInfoModel,
   TaskListData,
@@ -31,7 +32,7 @@ export const pickUp = (params: PickUpParamsModel) => {
 }
 
 /**
- * 交货接口
+ * 交付接口
  */
 export const deliver = (params: DeliverParamsModel) => {
   return Request.post<null>("/tasks/deliver", params)
@@ -49,5 +50,12 @@ export const carRecord = (params: CarRecordParamsModel) => {
  * 延迟提货接口
  */
 export const delay = (params: DelayParamsModel) => {
-  return Request.post<null>("/tasks/delay", params)
+  return Request.put<null>("/tasks/delay", params)
+}
+
+/**
+ * 上报异常接口
+ */
+export const exceptionReport = (params: ExceptionParamsModel) => {
+  return Request.post<null>("/tasks/reportException", params)
 }

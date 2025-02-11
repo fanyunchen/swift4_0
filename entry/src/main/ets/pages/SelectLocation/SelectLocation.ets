@@ -5,6 +5,7 @@ import promptAction from '@ohos.promptAction';
 import { permissionManager, WebSdkClass } from '../../utils';
 import { webview } from '@kit.ArkWeb';
 import { AddressItem } from '../../models';
+import router from '@ohos.router';
 
 @Entry
 @Component
@@ -134,6 +135,14 @@ struct SelectLocation {
         HMCard() {
           ForEach(this.list, (item: AddressItem) => {
             HMCardItem({ leftText: item.name, rightText: item.distance + 'm以内' })
+              .onClick(() => {
+                router.back({
+                  url: 'pages/ExceptionReport/ExceptionReport',
+                  params: {
+                    address: item.name
+                  }
+                })
+              })
           })
         }
       }
