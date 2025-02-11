@@ -6,4 +6,6 @@ export class CommonRouterParams {
   address?: string = ''
   addException?: boolean = false
   exceptionDetail?: ExceptionList | null = null
+  start?: string = ''
+  end?: string = ''
 }

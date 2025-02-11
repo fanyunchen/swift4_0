@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <meta charset="utf-8">
+    <title>地图导航</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        #container {
+          width: 100%;
+          height: 100vh;
+          background-color: pink;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+</body>
+</html>
+
+<script type="text/javascript">
+    window._AMapSecurityConfig = {
+      securityJsCode: "5a8c445a6a175367ee0650b73e84433e",
+    };
+</script>
+<script
+        type="text/javascript"
+        src="https://webapi.amap.com/maps?v=2.0&key=fb1a7e4b39f8bcdef8b0c6a63574e957"
+></script>
+<script type="text/javascript">
+    //地图初始化应该在地图容器 <div> 已经添加到 DOM 树之后
+    var map = new AMap.Map("container", {
+      zoom: 12, // 地图缩放级别
+      center:[116,40] // 中心点坐标
+    });
+    // 窗体加载完成后执行的方法
+
+    // 路径导航
+	function beginDriving(start,end){
+		const points = [
+		  { keyword: start}, //起始点坐标
+		  { keyword: end } //终点坐标
+		]
+		//引入和创建驾车规划插件
+		AMap.plugin(["AMap.Driving"], function () {
+		  const driving = new AMap.Driving({
+		    map: map,
+			// 驾车策略，：包括 LEAST_TIME,LEAST_FEE,LEAST_DISTANCE,REAL_TRAFFIC
+			policy:AMap.DrivingPolicy.LEAST_TIME
+		  });
+		  //获取起终点规划线路
+		  driving.search(points, function (status, result) {
+		    if (status === "complete") {
+		      //status：complete 表示查询成功，no_data 为查询无结果，error 代表查询错误
+		      //查询成功时，result 即为对应的驾车导航信息
+		      console.log(result);
+		    } else {
+		      console.log("获取驾车数据失败：" + result);
+		    }
+		  });
+		});
+	}
+
+<!--	beginDriving('上海火车站',"北京天安门")-->
+</script>

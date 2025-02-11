@@ -137,6 +137,17 @@ struct TaskDetail {
             .aspectRatio(1)
           Text('开始导航')
         }
+        .onClick(() => {
+          if (this.taskDetailData.status === TaskTypeEnum.Line) {
+            router.pushUrl({
+              url: 'pages/Navigation/NavigationPage',
+              params: {
+                start: this.taskDetailData.startAddress,
+                end: this.taskDetailData.endAddress
+              }
+            })
+          }
+        })
       }
       .width('100%')
       .justifyContent(FlexAlign.SpaceBetween)
