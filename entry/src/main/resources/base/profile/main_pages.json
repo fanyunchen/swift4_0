@@ -8,6 +8,7 @@
     "pages/CarRecord/CarRecord",
     "pages/Delay/Delay",
     "pages/ExceptionReport/ExceptionReport",
-    "pages/SelectLocation/SelectLocation"
+    "pages/SelectLocation/SelectLocation",
+    "pages/ExceptionReport/ExceptionDetail"
   ]
 }

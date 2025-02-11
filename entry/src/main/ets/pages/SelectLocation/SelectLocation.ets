@@ -26,6 +26,12 @@ struct SelectLocation {
     })
   }
 
+  aboutToDisappear(): void {
+    WebSdkClass.Context!.eventHub.off("search_list")
+    WebSdkClass.Context = null
+    WebSdkClass.webController = null
+  }
+
   // /**
   //  * 获取当前位置
   //  */

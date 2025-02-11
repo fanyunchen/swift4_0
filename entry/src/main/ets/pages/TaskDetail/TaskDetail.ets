@@ -381,7 +381,12 @@ struct TaskDetail {
           .width(24)
           .aspectRatio(1)
           .onClick(() => {
-            
+            router.pushUrl({
+              url: 'pages/ExceptionReport/ExceptionDetail',
+              params: {
+                exceptionDetail: item
+              }
+            })
           })
       }.width('100%')
       .padding({ left: 15, right: 15 })
