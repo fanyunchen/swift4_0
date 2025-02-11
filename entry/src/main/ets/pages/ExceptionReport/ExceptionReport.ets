@@ -119,7 +119,10 @@ struct ExceptionReport {
       await exceptionReport(this.exceptionForm)
       promptAction.showToast({ message: '异常上报成功', duration: 2000 })
       // 返回交货页面
-      router.back()
+      router.back({
+        url: "pages/TaskDetail/TaskDetail",
+        params: { addException: true }
+      })
     } catch (err) {
       AlertDialog.show({ message: '上报异常错误！' + JSON.stringify(err.message) })
     } finally {

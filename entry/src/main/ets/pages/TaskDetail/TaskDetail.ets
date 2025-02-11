@@ -4,6 +4,7 @@ import {
   CommonRouterParams,
   DeliverParams,
   DeliverParamsModel,
+  ExceptionList,
   ImageList,
   PickUpParamsModel,
   TaskDetailInfo,
@@ -50,6 +51,20 @@ struct TaskDetail {
     this.getTaskDetail(this.jobId)
   }
 
+  async onPageShow(): Promise<void> {
+    const params = router.getParams() as CommonRouterParams
+    if (params && params.addException) {
+      const result = await getTaskDetail(this.taskDetailData.id)
+      if (result !== '' && result !== null) {
+        this.taskDetailData.exceptionList = result.exceptionList
+      }
+    }
+  }
+
+  /**
+   * 基本信息内容展示
+   * @param item
+   */
   @Builder
   builderItem(item: basicFactsItemBuilderClass) {
     Row() {
@@ -276,7 +291,7 @@ struct TaskDetail {
             router.pushUrl({
               url: 'pages/ExceptionReport/ExceptionReport',
               params: {
-                id: this.taskDetailData.id
+                id: this.taskDetailData.transportTaskId
               }
             })
           })
@@ -316,6 +331,66 @@ struct TaskDetail {
     .translate({ y: -(70 + Number(AppStorage.get<number>(APP_BOTTOM_HEIGHT))) })
     .justifyContent(FlexAlign.SpaceBetween)
     .backgroundColor($r('app.color.white'))
+  }
+
+  /**
+   * 显示异常信息
+   */
+  @Builder
+  getExceptionContent() {
+    ForEach(this.taskDetailData.exceptionList, (item: ExceptionList, index) => {
+      Row() {
+        Column() {
+          Row() {
+            Text('上报时间')
+              .fontSize(14)
+              .fontColor($r('app.color.text_primary'))
+            Text(item.exceptionTime)
+              .fontColor($r('app.color.text_primary'))
+              .margin({ left: 20 })
+          }
+          .height(50)
+          .width('100%')
+
+          Row() {
+            Text('异常类型')
+              .fontSize(14)
+              .fontColor($r('app.color.text_primary'))
+            Text(item.exceptionType)
+              .fontColor($r('app.color.text_primary'))
+              .margin({ left: 20 })
+          }
+          .height(50)
+          .width('100%')
+
+          Row() {
+            Text('处理结果')
+              .fontSize(14)
+              .fontColor($r('app.color.text_primary'))
+            Text(item.handleResult)
+              .fontColor($r('app.color.text_primary'))
+              .margin({ left: 20 })
+          }
+          .height(50)
+          .width('100%')
+
+        }
+        .layoutWeight(1)
+
+        Image($r('app.media.ic_btn_more'))
+          .width(24)
+          .aspectRatio(1)
+          .onClick(() => {
+            
+          })
+      }.width('100%')
+      .padding({ left: 15, right: 15 })
+      .justifyContent(FlexAlign.SpaceBetween)
+      .border({
+        width: { bottom: this.taskDetailData.exceptionList.length - 1 === index ? 0 : 1 },
+        color: $r('app.color.background_divider')
+      })
+    })
   }
 
   // 获取提货按钮可用状态
@@ -427,18 +502,26 @@ struct TaskDetail {
               this.transportRoute()
             }
 
+            if (this.taskDetailData.exceptionList) {
+              HMToggleCard({ title: "异常信息", toggleCard: false }) {
+                this.getExceptionContent()
+              }
+            }
+
             if (this.taskDetailData.status === TaskTypeEnum.Waiting ||
               this.taskDetailData.status === TaskTypeEnum.Delivered) {
               HMToggleCard({ title: "提货信息", toggleCard: false }) {
                 this.getTransLineContent()
               }
             }
+
             if (this.taskDetailData.status === TaskTypeEnum.Line ||
               this.taskDetailData.status === TaskTypeEnum.Delivered) {
               HMToggleCard({ title: "交货信息", toggleCard: false }) {
                 this.getDeliverContent()
               }
             }
+
           }
           .padding({ bottom: 200 })
         }
